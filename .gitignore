@@ -1,0 +1,24 @@
+# --- Bundle assembly working dirs ---
+build/
+dist/
+downloads/
+assembly/
+
+# --- Assembled tool folders ---
+# The bundle ASSEMBLES from each tool's own releases. The tools' binaries
+# are NEVER committed to this repo; tools/ carries only its README.
+tools/*
+!tools/README.md
+
+# --- Release artifacts and disk images (never committed) ---
+*.zip
+*.iso
+*.img
+*.exe
+*.deb
+*.msi
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
