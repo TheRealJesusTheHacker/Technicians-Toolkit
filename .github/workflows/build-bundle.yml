@@ -93,19 +93,19 @@ jobs:
 
           | Tool | Version | Form |
           |---|---|---|
-          | Argus | 1.2.3 | Portable — `Argus.exe` (+ its portable-mode starter) |
-          | NitroCore | 1.1.4 | Portable — `NitroCoreOptimizer.exe` + its `_internal/` |
-          | VectorZip | 1.2.5 | Portable — `VectorZip.exe` |
-          | Charon | 1.0.1 | Portable — in its own `Charon/` folder, as it ships |
-          | Lazarus | 1.0.0 | Portable — `Lazarus.exe` |
-          | Aegis | 1.0.1 | Portable — in its own `Aegis/` folder, as it ships |
-          | Beerus | 0.4.0 | Portable app — in a `Beerus/` folder (see the second note below) |
-          | **Suite launcher** | **1.0.0** | `TechniciansToolkit.exe` — one window over the whole kit |
-          | Beerus — Destruct Key Pro | — | Never a folder: the bootable stick is its own USB stick |
+          | Argus | 1.2.6 | Portable — `Argus.exe` (+ its portable-mode starter) |
+          | NitroCore | 1.1.6 | Portable — `NitroCoreOptimizer.exe` + its `_internal/` |
+          | VectorZip | 1.2.7 | Portable — `VectorZip.exe` |
+          | Charon | 1.0.3 | Portable — in its own `Charon/` folder, as it ships |
+          | Lazarus | 1.0.2 | Portable — `Lazarus.exe` |
+          | Aegis | 1.0.3 | Portable — in its own `Aegis/` folder, as it ships |
+          | Beerus | 0.6.2 | Portable app — in a `Beerus/` folder (see the second note below) |
+          | **Suite launcher** | **1.0.2** | `TechniciansToolkit.exe` — one window over the whole kit |
+          | Beerus — Live Boot | — | Never a folder: the bootable stick is its own USB stick |
 
-          New in this bundle: **Lazarus** (restore by date, undelete, drive rescue) and **Aegis** (file vaults and a password manager) join as files. With them the kit is complete in the folder: the launcher shows seven Launch buttons, plus one honest card for the bootable stick.
+          New in this bundle — the first full kit: **Lazarus** (restore by date, undelete, drive rescue) and **Aegis** (file vaults and a password manager) join as files. With them the kit is complete in the folder: the launcher shows seven Launch buttons, plus one honest card for the bootable stick.
 
-          Beerus is in this bundle twice, once per form: the app above, and its other form — the bootable Destruct Key Pro — accounted for in the manifest as a link, never as files. Beerus Portable keeps its certificates of destruction in `Beerus/certificates` and its file, folder, and free-space wipe reports in `Beerus/certificates/reports` — your job records, inside the folder.
+          Beerus is in this bundle twice, once per form: the app above, and its other form — the bootable Live Boot — accounted for in the manifest as a link, never as files. Measured before publishing, on a Windows runner: Argus v1.2.6 scanned this whole bundle and reported every one of its 1,669 files Clean — each tool fingerprint-verified against the bundle's own checksums — while a planted EICAR test file was still caught by signature and a one-byte-changed tool was flagged Malicious as tampered. Beerus Portable keeps its certificates of destruction in `Beerus/certificates` and its file, folder, and free-space wipe reports in `Beerus/certificates/reports` — your job records, inside the folder.
 
           Aegis keeps nothing anywhere else: no settings folder, no registry entries, no temporary copies — its vaults are single sealed files (`.aegis`) that you name and place yourself. Lazarus keeps its backup stores in a folder you name, refuses system folders for them, and always writes rescued files to a different drive than the one being rescued.
 
