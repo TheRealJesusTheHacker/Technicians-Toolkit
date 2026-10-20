@@ -10,10 +10,13 @@ The bundle is ASSEMBLED, never hand-copied:
 3. Lay out the ONE bundle folder: every tool's files together at one
    level (the owner's flat layout — the bundle adds no per-tool
    folders of its own; a tool keeps only the structure its own
-   portable edition ships with). The one known collision — every
-   portable carries a README-PORTABLE.txt — is resolved by keeping
-   each as README-PORTABLE-<Tool>.txt, contents unchanged, and the
-   manifest records it. Any OTHER overwrite aborts the build.
+   portable edition ships with). The known collisions are resolved
+   openly, and the manifest records each: every portable carries a
+   README-PORTABLE.txt, kept as README-PORTABLE-<Tool>.txt, contents
+   unchanged; and a tool pinned with a "folder" in tools.json (Beerus
+   — its _internal support folder shares NitroCore's name, and two
+   cannot share one level) is laid out under that folder name, its
+   files unchanged. Any OTHER overwrite aborts the build.
 4. Add the launcher (a single file), write MANIFEST.json and the
    bundle's SHA256SUMS.txt.
 5. Zip the folder and write the release-level SHA256SUMS.txt.
@@ -26,7 +29,7 @@ Standard library only. Usage:
 
     assemble_bundle.py assemble --launcher-file TechniciansToolkit.exe \
         [--download-dir downloads] [--work-dir assembly] [--out-dir dist]
-    assemble_bundle.py verify --zip dist/TechniciansToolkit-v0.1.0.zip
+    assemble_bundle.py verify --zip dist/TechniciansToolkit-vX.Y.Z.zip
 """
 
 from __future__ import annotations
@@ -117,8 +120,25 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
     """Extract one portable zip into the flat bundle folder.
 
     Returns the manifest fragment for the tool. Aborts on any
-    overwrite the one documented rename doesn't explain.
+    overwrite the documented answers don't explain: the portable
+    readme's rename, and — for a tool pinned with a "folder" —
+    laying its files out under that one folder name (Beerus: its
+    _internal support folder shares NitroCore's name, and two
+    different support folders cannot share one level; the tool's
+    files are unchanged, only where they sit differs; the readme
+    still lands at the bundle's level under its qualified name).
     """
+    folder = tool.get("folder")
+    if folder is not None and (
+        not isinstance(folder, str)
+        or folder != folder.strip()
+        or safe_member_name(folder) != folder
+        or "/" in folder
+    ):
+        raise AssemblyError(
+            f"{tool['name']}: the 'folder' pin in tools.json must be one "
+            f"plain folder name, not {folder!r}."
+        )
     readme_final = None
     with zipfile.ZipFile(artifact) as zf:
         for info in zf.infolist():
@@ -128,6 +148,8 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
             if member == README_NAME:
                 member = f"README-PORTABLE-{tool['name']}.txt"
                 readme_final = member
+            elif folder:
+                member = f"{folder}/{member}"
             target = bundle_root / member
             if target.exists():
                 raise AssemblyError(
@@ -179,6 +201,20 @@ def write_checksums(bundle_root: Path) -> Path:
 
 def assemble(args) -> Path:
     config = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    # A "folder" pin is one tool's answer to a top-level name
+    # collision; two tools claiming the same folder would merge
+    # their files into it — refuse before anything is laid out.
+    claimed = {}
+    for tool in config["tools"]:
+        folder = tool.get("folder")
+        if folder:
+            if folder in claimed:
+                raise AssemblyError(
+                    f"tools.json pins the folder '{folder}' for both "
+                    f"{claimed[folder]} and {tool['name']} — one folder "
+                    "can only hold one tool. Assembly stopped."
+                )
+            claimed[folder] = tool["name"]
     download_dir = Path(args.download_dir)
     download_dir.mkdir(parents=True, exist_ok=True)
     work = Path(args.work_dir)
