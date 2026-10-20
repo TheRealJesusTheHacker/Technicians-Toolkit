@@ -34,9 +34,17 @@ TechniciansToolkit/
     Beerus.exe               Beerus Portable
     _internal/               Beerus's support folder (part of the tool)
   README-PORTABLE-Beerus.txt
+
+  Lazarus.exe                Lazarus
+  README-PORTABLE-Lazarus.txt
+
+  Aegis/                     Aegis's own folder, exactly as its portable ships
+    Aegis.exe                Aegis
+    _internal/               Aegis's support folder (part of the tool)
+    README-PORTABLE.txt      Aegis's own readme, inside its folder as shipped
 ```
 
-Lazarus and Aegis have no files here yet — the manifest lists them as not in this bundle, and their files land when their portable editions ship (their packaging phases). Beerus appears in both its forms: the Portable app as files (the `Beerus` folder above), and the Destruct Key Pro boot image not at all — it is a separate stick, accounted for in the manifest as a link (see below).
+Beerus appears in both its forms: the Portable app as files (the `Beerus` folder above), and the Live Boot image not at all — it is a separate stick, accounted for in the manifest as a link (see below).
 
 **The one rename, stated openly:** every portable edition carries a file named `README-PORTABLE.txt`, each with different contents. In the bundle each is kept as `README-PORTABLE-<Tool>.txt` — contents byte-identical to the tool's own readme; only the name is qualified, so nothing overwrites anything. The manifest records the final name per tool, and the bundle's manifest notes say the same. Nothing else is renamed, moved, or added.
 
@@ -47,9 +55,10 @@ Lazarus and Aegis have no files here yet — the manifest lists them as not in t
 - **NitroCore** — run `NitroCoreOptimizer.exe` **as administrator** (right-click → Run as administrator; the exe requests elevation itself). Keep `_internal/` beside it — it's part of the app. Note: NitroCore writes its logs and registry-undo snapshots to `%APPDATA%\NitroCore` on the host, as its own portable readme states.
 - **VectorZip** — run `VectorZip.exe` from the folder. Archives are written next to the files you choose, nowhere hidden.
 - **Charon** — open the `Charon` folder and run `Charon.exe`; with no arguments it opens the window. Two things stay with the machine, by design: Charon's ledger lives at `%PROGRAMDATA%\Charon\ledger.json`, and the restore point — the toll — is created on the machine being serviced, as it must be.
-- **Lazarus / Aegis** — not in the bundle yet; nothing to run until their portable editions ship.
+- **Lazarus** — run `Lazarus.exe` from the folder. It writes only where you point it and keeps no data of its own beyond its backup configuration, as its own portable readme states.
+- **Aegis** — open the `Aegis` folder and run `Aegis.exe`. Aegis keeps nothing anywhere else: its vaults are single sealed files you name and place yourself.
 - **Beerus Portable** — run `Beerus/Beerus.exe`. It keeps its work records beside its start file, inside this folder: certificates of destruction land in `Beerus/certificates/`, and its file, folder, and free-space wipe reports in `Beerus/certificates/reports/` — your job records, and they travel with the folder. Whole-drive mode ships disarmed: arming it is a deployment act by Sentinel, not a setting in the app (its own readme, `README-PORTABLE-Beerus.txt`, explains). The file/folder and free-space modes are live behind their consent gates.
-- **Beerus — Destruct Key Pro** — the bootable form, intentionally never files here: get the image from [Beerus's repo](https://github.com/TheRealJesusTheHacker/Beerus.exe), flash a **separate** USB with it, and boot the target machine from that stick.
+- **Beerus — Live Boot** — the bootable form, intentionally never files here: get the image from [Beerus's repo](https://github.com/TheRealJesusTheHacker/Beerus.exe), flash a **separate** USB with it, and boot the target machine from that stick.
 
 ## Rules of the folder
 

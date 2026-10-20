@@ -14,7 +14,7 @@ One download, one USB, the whole kit. A bundle release is **assembled** — pull
 - **M1 — First assembled bundle (v0.1.0) — DONE, 2026-10-20.** Trigger: the packaging-ready tools cut their next releases. **Trigger met 2026-10-20:** NitroCore v1.1.4, VectorZip v1.2.5, and Charon v1.0.1 all shipped with their portables. The first bundle assembles the four portables that exist — Argus v1.2.3, NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1 — in the flat one-folder form, with a full manifest and checksums, **plus the suite launcher's first version** (pulled forward from M3 by the owner's bundle-form clarification: the launcher is part of the bundle's shape, not a later extra). Tools still in roadmap state are accounted for in the manifest as absent, not faked; Beerus is linked.
 - **M2 — Assembly tooling — DONE, 2026-10-20.** The pull → verify → lay out → manifest steps are one scripted, repeatable process in this repo (`bundle/assemble_bundle.py`, pins in `bundle/tools.json`), with a `verify` pass that re-opens the built zip and proves it, and a CI workflow (`.github/workflows/build-bundle.yml`) that tests the launcher, builds it on Windows, assembles the bundle, verifies it, runs the shipped launcher's own `--check` against the shipped bundle, and publishes the release. Unverified assembly never ships.
 - **M3 — The launcher (first version shipped with M1; growth continues).** The launcher lives in `launcher/` and ships inside the bundle as the single file `TechniciansToolkit.exe` in the bundle folder: it reads the bundle manifest, lists every tool in the kit with its version and job, and launches the tool the technician picks — starting only the manifest's entrypoint, inside the bundle folder, with the entry's fixed arguments and environment. The tools keep working without it — the launcher is a front door, not a lock. Growth with bundle v0.2.0: the launcher (v0.2.0) gained a two-forms presentation for Beerus — Beerus Portable as a bundled, launchable card and the Destruct Key Pro as its own linked card, told apart by name, with the About box telling both forms — and the kit's first dual-form manifest entries are pinned by tests. Still ahead in this milestone: on-demand bundle hash verification inside the window, and polish as the kit grows.
-- **M4 — Full kit (bundle v1.0).** Every tool has a portable form in the bundle: Lazarus and Aegis portables ship with their packaging phases, and Beerus is represented by its link and flashing notes. Only then does the bundle take version 1.0.
+- **M4 — Full kit (bundle v1.0) — DONE (2026-10-20).** Every tool has a portable form in the bundle: Lazarus and Aegis joined as files with their portable editions, and Beerus is represented by its app as files plus the Live Boot stick as a link. Bundle v1.0.0 shipped on that set (see docs/PORTABLE-STATUS.md).
 
 ## Bundle versioning
 
@@ -67,7 +67,7 @@ Every bundle ships two files at its root:
   ],
   "linked": [
     {
-      "name": "Beerus — Destruct Key Pro",
+      "name": "Beerus — Live Boot",
       "job": "Wipes drives completely, with proof it was done.",
       "repo": "TheRealJesusTheHacker/Beerus.exe",
       "note": "Beerus's other form: a bootable USB stick of its own. Get the image from the Beerus repo."
@@ -87,7 +87,7 @@ Every bundle ships two files at its root:
 
 Rules:
 
-- Every tool in the kit is accounted for: bundled tools under `tools`, bootable forms under `linked`, tools whose portable hasn't shipped under `absent` — listed as absent, never faked as present. A tool with two forms is accounted for once per form: Beerus's app sits under `tools` and its bootable Destruct Key Pro under `linked`, the two entries told apart by name.
+- Every tool in the kit is accounted for: bundled tools under `tools`, bootable forms under `linked`, tools whose portable hasn't shipped under `absent` — listed as absent, never faked as present. A tool with two forms is accounted for once per form: Beerus's app sits under `tools` and its bootable Live Boot under `linked`, the two entries told apart by name.
 - `sha256` is taken from the artifact **and** cross-checked against the checksums file published with that tool's own release. A mismatch stops assembly.
 - `path` is the tool's base inside the bundle folder (`.` when its files sit at the folder's level, as the flat layout intends); `entrypoint` is the file the launcher starts, bundle-relative. The launcher resolves it inside the bundle folder only — an entrypoint (or `env`/`prepare_dirs` path) that points outside is refused.
 - `args` is a fixed list (usually empty); `env` is a fixed map whose values may start with the `{bundle}` placeholder for the bundle folder's own path; `prepare_dirs` lists bundle-relative folders to create before a start (portable Argus's data folder). The manifest is **data** — it is validated field by field and never executed, evaluated, or passed to a shell.
@@ -98,7 +98,7 @@ Rules:
 ## USB assembly notes
 
 - **Layout:** the bundle zip contains exactly one folder — extract it to the root of the stick and that folder is the kit. Inside it, everything sits at one level (see [../tools/README.md](../tools/README.md)): the tools' files together, the launcher `TechniciansToolkit.exe` beside them, and the manifest and checksums at the same level.
-- **Two sticks, two jobs, on purpose:** the Toolkit USB is a normal file-system stick you plug into a *running* machine. The Beerus Destruct Key Pro is a *bootable* stick you boot a machine *from*. They are different media by nature — the bundle links Beerus and documents its flashing process, but never merges the two. A technician carries both.
+- **Two sticks, two jobs, on purpose:** the Toolkit USB is a normal file-system stick you plug into a *running* machine. The Beerus Live Boot is a *bootable* stick you boot a machine *from*. They are different media by nature — the bundle links Beerus and documents its flashing process, but never merges the two. A technician carries both.
 - **Field hygiene:** rebuild sticks from a verified bundle download rather than copying stick-to-stick; verify `SHA256SUMS.txt` after every rebuild; a stick whose hashes don't match the manifest is wiped and rebuilt, not trusted.
 
 ## What this repo will never do

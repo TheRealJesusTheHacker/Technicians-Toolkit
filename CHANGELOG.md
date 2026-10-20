@@ -2,16 +2,33 @@
 
 All notable changes to the Technician's Toolkit — the bundle, its launcher, and its assembly tooling. Bundle versions are manifests: a version names exactly the tool versions inside it (see docs/ROADMAP.md).
 
-## [Unreleased] — kit-hunt launcher fixes (landed on main; the held bundle 1.0.0 assembly picks them up)
+## [Unreleased]
 
-### Fixed
+Nothing yet — the next bundle assembles when a member tool ships a new portable release.
+
+## [1.0.0] — 2026-10-20
+
+**Bundle 1.0.0 — the full kit.** The first bundle with every medic-kit tool in it as files: Argus 1.2.6, NitroCore 1.1.6, VectorZip 1.2.7, Charon 1.0.3, Lazarus 1.0.2, Aegis 1.0.3, and Beerus Portable 0.6.2, plus the Beerus — Live Boot stick accounted for as the separate bootable medium it is. Release `418949983`: `TechniciansToolkit-v1.0.0.zip` (359,216,273 B, SHA-256 `2d4f898d5e89cb58d573aff0aef128cfce1897484cf51ef6073884cb93a81786`), `SHA256SUMS.txt` (97 B), one zip opening to one folder, 1,668 files inside, every internal checksum verified after publishing by a fresh download and re-extraction (7 tools ready, the stick separate, zero not in this bundle).
+
+### Suite launcher 1.0.2
+
+- Every card now carries a slim **namesake identity stripe** in its tool's own primary — peacock emerald for Argus, nitrous azure for NitroCore, blueprint cyan for VectorZip, Styx aqua for Charon, ember for Lazarus, shield bronze for Aegis, and Beerus's canonical violet (the owner's namesake exception) on both Beerus cards. The stripes are pinned by the launcher's theme and render tests; the window itself stays Sentinel green on black, and the state accent, status text, and launch behavior are unchanged.
+- The bootable stick's card is renamed **"Beerus — Live Boot"** everywhere it is a current-state surface (`bundle/tools.json`, the About box, the tests that pin them, and this repo's docs). The retired name survives only in dated history entries.
+
+### Argus witness (measured 2026-10-20, Windows runner, witness run `39505362893`)
+
+Anchored on the bundle (its data folder placed in the bundle, the launcher's own contract), Argus's engine scanned all 1,669 files and returned Clean for every one — each tool fingerprint-verified against the bundle's own `SHA256SUMS.txt`, its packaging traits listed but not scored. On a copy, a planted EICAR test file was caught by signature, and VectorZip.exe with one byte changed was flagged Malicious (score 105) with the bundle-tamper signal — trust suppresses nothing. Stranger controls with the same engine: fresh PyInstaller hello-world programs (plain and PySide6) scored Suspicious 59 — the v1.2.5 calibration cap, not convicted — a stock `cmd.exe` copy Suspicious 30, `notepad.exe` Clean 20. Copies of Argus.exe, the launcher, and VectorZip.exe scanned with no bundle around them scored Suspicious 59: not Clean, not Malicious — the trust travels with the bundle's integrity record, nowhere else. The shipped frozen Argus.exe, run from inside the bundle, passed its `--self-check` and `--self-check-qt` (exit 0) and its GUI started on the runner, created its data store inside the bundle's ArgusData folder, and stayed resident; a scan verdict from the frozen program itself remains unproven — the packaged program exposes no scan command, and its realtime pickup of a dropped test file was not observed within 75 seconds.
+
+### Kit-hunt launcher fixes (landed on main earlier today; they ship in this bundle)
+
+#### Fixed
 
 - **NitroCore could not be started from the launcher at all (field defect, bundle v0.2.0).** NitroCore's program asks Windows for administrator permission — its own manifest requests it, and its portable readme says to run it as administrator. Windows' plain start route (CreateProcess, which the launcher used) refuses such a program outright (error 740), while a double-click asks the user and starts it; the launcher reported that refusal as "Its files may be damaged — re-download the bundle", which was never true. The launcher (now v1.0.1) retries an elevation refusal through the same ask-the-user route a double-click takes (ShellExecute "runas", the manifest's fixed arguments only, still no shell), and if permission is not granted the card says exactly that. Access-denied and network-path refusals likewise get their own plain-language messages instead of the damaged-files claim.
 - **Folder tools were started in the wrong working folder.** Every tool used to be started with the bundle root as its working folder; a tool that lives in a folder of its own (Charon, Aegis, Beerus) now starts in that folder — the same folder it runs from when started by hand, as the About text promises.
 - **"Started" was announced before anyone knew.** A start counted as started the moment Windows created the process, so a tool whose support files were damaged died straight away while its card said "started.". A start now has to survive a short settling moment; a process that fails inside it is reported as the failure it is. A process that ends cleanly inside the moment (a starter that hands off) still counts as started.
 - **A gutted tool still showed "Ready."** Discovery checked only the start file, so a one-folder tool whose `_internal` support folder was lost (an interrupted unzip) looked ready. The manifest can now carry a per-tool `requires` list; the pins name each one-folder tool's `_internal`, and without it the card says what is missing instead of "Ready.".
 
-### Assembly
+#### Assembly
 
 - **Case-only filename collisions now stop assembly.** The collision guard compared names case-sensitively, so two files differing only by letter case assembled cleanly on Linux and overwrote each other when the bundle was unzipped on Windows. The guard now folds case across the whole bundle (the current kit has no such pair — this closes the class). A tool file using one of the bundle's own names (the launcher file, `MANIFEST.json`, `SHA256SUMS.txt`, any letter case) likewise stops assembly instead of being overwritten. The assembler gained its own test suite (`bundle/tests`), run by CI next to the launcher's (launcher suite now 59 tests, assembler 7).
 

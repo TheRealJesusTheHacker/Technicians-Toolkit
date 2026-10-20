@@ -10,7 +10,7 @@ It is a front door, never a replacement. Every tool in the bundle also runs on i
 
 - **Bundled tools** — name, version, one plain sentence about the job, and a **Launch** button that starts the tool's own program from this folder.
 - **Tools not in this bundle yet** — honest cards (no button) saying when they join. The kit's completeness is shown, never faked.
-- **Beerus, twice — once per form.** Beerus Portable, the app, is a bundled tool with a **Launch** button like any other. The Destruct Key Pro, its bootable form, gets its own card ("Beerus — Destruct Key Pro") explaining it lives on its own bootable USB stick — a drive is wiped by booting from that stick, for machines that are off or being decommissioned whole. The two cards are told apart by name, and the About box tells both forms.
+- **Beerus, twice — once per form.** Beerus Portable, the app, is a bundled tool with a **Launch** button like any other. Live Boot, its bootable form, gets its own card ("Beerus — Live Boot") explaining it lives on its own bootable USB stick — a drive is wiped by booting from that stick, for machines that are off or being decommissioned whole. The two cards are told apart by name, and the About box tells both forms.
 - **The bundle's version**, the date it was put together, and an **About** box in plain language.
 
 Every state is designed: if the manifest is missing or damaged the window says so plainly and what to do; if a tool's files are missing its card says so; if a start fails, the card explains it. There are no placeholder buttons and no dead ends.
@@ -19,7 +19,7 @@ Every state is designed: if the manifest is missing or damaged the window says s
 
 - **The manifest is data, never code.** It is parsed as JSON and validated field by field. A tool is started only from the entrypoint path its manifest entry carries, resolved inside the bundle folder — a path that points outside the folder is refused. Arguments are the entry's fixed list, passed to the operating system as a list: no shell, no command strings, nothing typed by a user is ever executed.
 - **Fixed environment, prepared folders.** An entry may carry fixed environment variables (portable Argus's `ARGUS_DATA_DIR`, which substitutes the `{bundle}` placeholder with the bundle folder's own path and must stay inside it) and folders to create before starting (`prepare_dirs`, bundle-relative, confined the same way). That is the whole of the launcher's power, and it is exercised only through the validated manifest.
-- **House palette.** Sentinel green on black (`#2ee06f` on `#060a07`/`#0c130d`), every text pairing at least 4.5:1 contrast, no purple anywhere. A test renders the window and audits the pixels — palette colors present, the red problem-accent only where a problem state asks for it, and no purple beyond an isolated anti-aliasing fringe pixel at a glyph edge.
+- **House palette, namesake stripes.** Sentinel green on black (`#2ee06f` on `#060a07`/`#0c130d`), every text pairing at least 4.5:1 contrast. Each card also carries a slim identity stripe in its tool's own namesake primary (peacock emerald, nitrous azure, blueprint cyan, Styx aqua, ember, shield bronze — and Beerus's canonical violet, the owner's single namesake exception). Tests render the window and audit the pixels — palette and stripe colors present, the red problem-accent only where a problem state asks for it, and purple only as Beerus's violet stripe.
 - **Plain language.** No jargon on any card, panel, or error.
 
 ## Build
