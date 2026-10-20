@@ -6,12 +6,14 @@ How the bundle comes together, how it versions, and how a USB gets assembled. Th
 
 One download, one USB, the whole kit. A bundle release is **assembled** — pulled from each tool's own official release, hash-verified, laid out in a fixed tree, and shipped with a manifest that records exactly what's inside. Nothing in a bundle is copied by hand, and no tool binary is ever committed to this repository.
 
+**The bundle's form (owner's clarification, 2026-10-20):** one zip that opens to **one folder**, with everything in that folder together. Every bundled tool sits in the folder in its portable form, usable standalone, and the **suite launcher app** sits in the same folder as a single file, giving one GUI over the whole kit. The bundle adds no per-tool folders of its own — a tool keeps only the structure its own portable edition ships with (Charon's `Charon/` folder, NitroCore's `_internal/`). The launcher is a front door, never a replacement for the standalone tools: it is bundle infrastructure, not an eighth tool.
+
 ## Bundle milestones
 
 - **M0 — Bundle home (done, 2026-10-20).** This repo: flagship README, the living portable-status tracker, this roadmap, the bundle layout index, and the launcher stub (`toolkit/` v0.1.0). The fleet-wide portable audit behind the tracker: Argus ships today; NitroCore, VectorZip, and Charon are packaging-ready; Lazarus and Aegis carry the portable edition as a named roadmap deliverable; Beerus is portable by design.
-- **M1 — First assembled bundle (v0.1.0).** Trigger: the packaging-ready tools cut their next releases (NitroCore after v1.1.3, VectorZip's next tag, Charon v1.0.1 once its Windows release gate is green). **Trigger met 2026-10-20:** NitroCore v1.1.4, VectorZip v1.2.5, and Charon v1.0.1 all shipped with their portables — the first bundle assembly is unblocked. The bundle assembles the portables that exist at that point — Argus plus whichever have shipped — with a full manifest and checksums. Tools still in roadmap state are listed in the manifest as absent, not faked.
-- **M2 — Assembly tooling.** The pull → verify → lay out → manifest steps become one scripted, repeatable process in this repo (and, when it earns its keep, a CI workflow that assembles a bundle release from a list of tool releases). Manual assembly with verified hashes is acceptable until then; unverified assembly never is.
-- **M3 — The launcher.** `toolkit/` grows from stub to app: reads the bundle manifest, lists the tools on the stick with their versions, verifies bundle hashes on demand, and launches the tool the technician picks. The tools keep working without it — the launcher is a front door, not a lock.
+- **M1 — First assembled bundle (v0.1.0) — DONE, 2026-10-20.** Trigger: the packaging-ready tools cut their next releases. **Trigger met 2026-10-20:** NitroCore v1.1.4, VectorZip v1.2.5, and Charon v1.0.1 all shipped with their portables. The first bundle assembles the four portables that exist — Argus v1.2.3, NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1 — in the flat one-folder form, with a full manifest and checksums, **plus the suite launcher's first version** (pulled forward from M3 by the owner's bundle-form clarification: the launcher is part of the bundle's shape, not a later extra). Tools still in roadmap state are accounted for in the manifest as absent, not faked; Beerus is linked.
+- **M2 — Assembly tooling — DONE, 2026-10-20.** The pull → verify → lay out → manifest steps are one scripted, repeatable process in this repo (`bundle/assemble_bundle.py`, pins in `bundle/tools.json`), with a `verify` pass that re-opens the built zip and proves it, and a CI workflow (`.github/workflows/build-bundle.yml`) that tests the launcher, builds it on Windows, assembles the bundle, verifies it, runs the shipped launcher's own `--check` against the shipped bundle, and publishes the release. Unverified assembly never ships.
+- **M3 — The launcher (first version shipped with M1; growth continues).** The launcher lives in `launcher/` and ships inside the bundle as the single file `TechniciansToolkit.exe` in the bundle folder: it reads the bundle manifest, lists every tool in the kit with its version and job, and launches the tool the technician picks — starting only the manifest's entrypoint, inside the bundle folder, with the entry's fixed arguments and environment. The tools keep working without it — the launcher is a front door, not a lock. Still ahead in this milestone: on-demand bundle hash verification inside the window, and polish as the kit grows.
 - **M4 — Full kit (bundle v1.0).** Every tool has a portable form in the bundle: Lazarus and Aegis portables ship with their packaging phases, and Beerus is represented by its link and flashing notes. Only then does the bundle take version 1.0.
 
 ## Bundle versioning
@@ -32,38 +34,57 @@ Every bundle ships two files at its root:
   "bundle": "TechniciansToolkit",
   "bundle_version": "0.1.0",
   "assembled": "2026-10-20",
+  "launcher": {"file": "TechniciansToolkit.exe", "version": "0.1.0"},
   "tools": [
     {
       "name": "Argus",
+      "job": "Scans the computer for viruses and other malware, and locks away what it finds.",
       "repo": "TheRealJesusTheHacker/Argus.exe",
       "version": "1.2.3",
       "artifact": "ArgusPortable.zip",
-      "path": "tools/argus/",
       "sha256": "<sha256 of the artifact as downloaded>",
-      "source_release": "https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3"
+      "source_release": "https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3",
+      "path": ".",
+      "readme": "README-PORTABLE-Argus.txt",
+      "entrypoint": "Argus.exe",
+      "args": [],
+      "env": {"ARGUS_DATA_DIR": "{bundle}/ArgusData"},
+      "prepare_dirs": ["ArgusData"]
     }
   ],
   "linked": [
     {
       "name": "Beerus",
+      "job": "Wipes drives completely, with proof it was done.",
       "repo": "TheRealJesusTheHacker/Beerus.exe",
       "note": "Bootable image — not bundled as files. Flash the Destruct Key Pro from Beerus's own release."
     }
-  ]
+  ],
+  "absent": [
+    {
+      "name": "Lazarus",
+      "job": "Brings files back — restore by date, undelete, and rescue from dying drives.",
+      "repo": "TheRealJesusTheHacker/Lazarus.exe",
+      "note": "Not in this bundle yet — it joins when its portable edition ships."
+    }
+  ],
+  "notes": ["<bundle-level notes, e.g. the README-PORTABLE collision resolution>"]
 }
 ```
 
 Rules:
 
-- One entry per tool: bundled tools under `tools`, Beerus (and any future bootable) under `linked`.
-- `sha256` is taken from the artifact **and** cross-checked against the `SHA256SUMS.txt` published with that tool's own release. A mismatch stops assembly.
-- A tool that hasn't shipped a portable yet is simply absent from `tools` — the manifest never lists what isn't in the bundle.
+- Every tool in the kit is accounted for exactly once: bundled tools under `tools`, Beerus (and any future bootable) under `linked`, tools whose portable hasn't shipped under `absent` — listed as absent, never faked as present.
+- `sha256` is taken from the artifact **and** cross-checked against the checksums file published with that tool's own release. A mismatch stops assembly.
+- `path` is the tool's base inside the bundle folder (`.` when its files sit at the folder's level, as the flat layout intends); `entrypoint` is the file the launcher starts, bundle-relative. The launcher resolves it inside the bundle folder only — an entrypoint (or `env`/`prepare_dirs` path) that points outside is refused.
+- `args` is a fixed list (usually empty); `env` is a fixed map whose values may start with the `{bundle}` placeholder for the bundle folder's own path; `prepare_dirs` lists bundle-relative folders to create before a start (portable Argus's data folder). The manifest is **data** — it is validated field by field and never executed, evaluated, or passed to a shell.
+- `readme` names the tool's portable readme as it sits in the bundle folder (see the collision rule in the layout index).
 
-**`SHA256SUMS.txt`** — one line per file at the bundle root (`<sha256>  <filename>`), covering the bundle zip's contents list and the manifest itself, so a downloaded bundle can be verified end-to-end with `certutil -hashfile` (Windows) or `sha256sum -c` (Linux).
+**`SHA256SUMS.txt`** — one line per file in the bundle folder (`<sha256>  <path relative to the bundle folder>`), covering every file except the checksums file itself — the manifest included — so an extracted bundle can be verified end-to-end with `sha256sum -c` (or per-file with `certutil -hashfile` on Windows). The release additionally publishes a `SHA256SUMS.txt` asset covering the bundle zip itself.
 
 ## USB assembly notes
 
-- **Layout:** the bundle zip *is* the USB layout — extract it to the root of the stick and it's ready. Tools live under `tools/<tool>/` (see [../tools/README.md](../tools/README.md)); the manifest and checksums sit at the root; the launcher, when it lands (M3), sits at the root too.
+- **Layout:** the bundle zip contains exactly one folder — extract it to the root of the stick and that folder is the kit. Inside it, everything sits at one level (see [../tools/README.md](../tools/README.md)): the tools' files together, the launcher `TechniciansToolkit.exe` beside them, and the manifest and checksums at the same level.
 - **Two sticks, two jobs, on purpose:** the Toolkit USB is a normal file-system stick you plug into a *running* machine. The Beerus Destruct Key Pro is a *bootable* stick you boot a machine *from*. They are different media by nature — the bundle links Beerus and documents its flashing process, but never merges the two. A technician carries both.
 - **Field hygiene:** rebuild sticks from a verified bundle download rather than copying stick-to-stick; verify `SHA256SUMS.txt` after every rebuild; a stick whose hashes don't match the manifest is wiped and rebuilt, not trusted.
 
