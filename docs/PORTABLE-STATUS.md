@@ -1,6 +1,6 @@
 # Portable Status — The Living Tracker
 
-**Last audit: 2026-10-20** (fleet-wide portable-mandate audit; every entry below was verified against the tool's live repository and release lists that night — not copied from README claims).
+**Last audit: 2026-10-20** (fleet-wide portable-mandate audit; every entry below was verified against the tool's live repository and release lists that night — not copied from README claims). **Round-2 update, later the same day:** the three packaging-ready tools shipped their portables — NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1 (the last also carrying the Windows ledger-lock fix) — each verified against its live release asset list below.
 
 This file tracks one question per medic-kit tool: *what is its portable edition, where does it download, and what is queued next?* It is updated on every audit. If a status here and a tool's own README disagree, this tracker is wrong until re-audited — flag it.
 
