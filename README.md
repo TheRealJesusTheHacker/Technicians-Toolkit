@@ -24,7 +24,7 @@ This repository is the bundle's home — its documentation, its live portable-st
 |---|---|---|---|
 | **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.3](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3) |
 | **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.4](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.4) |
-| **VectorZip** | Pack — file archives & compression | 🔧 **Packaging ready** — portable zips ship with the next tagged release | [VectorZip](https://github.com/TheRealJesusTheHacker/VectorZip) |
+| **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.5](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.5) |
 | **Charon** | Update — driver updates, restore point first | 🔧 **Packaging ready** — first portable ships with its next release | [Charon](https://github.com/TheRealJesusTheHacker/Charon.exe) |
 | **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | 🗺️ **Roadmap** — named deliverable of its packaging phase | [Lazarus](https://github.com/TheRealJesusTheHacker/Lazarus.exe) |
 | **Aegis** | Protect — file encryption & password vault | 🗺️ **Roadmap** — named deliverable of its packaging phase, after its security audit gate | [Aegis](https://github.com/TheRealJesusTheHacker/Aegis.exe) |
