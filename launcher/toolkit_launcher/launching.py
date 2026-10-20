@@ -64,6 +64,10 @@ class Launcher:
                 raise LaunchError(
                     f"{tool_name} can't be started: a setting points outside the bundle folder."
                 )
+            # Return the native form: the manifest writes paths with
+            # forward slashes, but the tool being started deserves a
+            # clean path in its own platform's shape.
+            return str(candidate)
         return resolved
 
     def launch(self, state: ToolState):
