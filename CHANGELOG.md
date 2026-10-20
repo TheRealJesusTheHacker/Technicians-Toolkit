@@ -2,6 +2,19 @@
 
 All notable changes to the Technician's Toolkit — the bundle, its launcher, and its assembly tooling. Bundle versions are manifests: a version names exactly the tool versions inside it (see docs/ROADMAP.md).
 
+## [Unreleased] — kit-hunt launcher fixes (landed on main; the held bundle 1.0.0 assembly picks them up)
+
+### Fixed
+
+- **NitroCore could not be started from the launcher at all (field defect, bundle v0.2.0).** NitroCore's program asks Windows for administrator permission — its own manifest requests it, and its portable readme says to run it as administrator. Windows' plain start route (CreateProcess, which the launcher used) refuses such a program outright (error 740), while a double-click asks the user and starts it; the launcher reported that refusal as "Its files may be damaged — re-download the bundle", which was never true. The launcher (now v1.0.1) retries an elevation refusal through the same ask-the-user route a double-click takes (ShellExecute "runas", the manifest's fixed arguments only, still no shell), and if permission is not granted the card says exactly that. Access-denied and network-path refusals likewise get their own plain-language messages instead of the damaged-files claim.
+- **Folder tools were started in the wrong working folder.** Every tool used to be started with the bundle root as its working folder; a tool that lives in a folder of its own (Charon, Aegis, Beerus) now starts in that folder — the same folder it runs from when started by hand, as the About text promises.
+- **"Started" was announced before anyone knew.** A start counted as started the moment Windows created the process, so a tool whose support files were damaged died straight away while its card said "started.". A start now has to survive a short settling moment; a process that fails inside it is reported as the failure it is. A process that ends cleanly inside the moment (a starter that hands off) still counts as started.
+- **A gutted tool still showed "Ready."** Discovery checked only the start file, so a one-folder tool whose `_internal` support folder was lost (an interrupted unzip) looked ready. The manifest can now carry a per-tool `requires` list; the pins name each one-folder tool's `_internal`, and without it the card says what is missing instead of "Ready.".
+
+### Assembly
+
+- **Case-only filename collisions now stop assembly.** The collision guard compared names case-sensitively, so two files differing only by letter case assembled cleanly on Linux and overwrote each other when the bundle was unzipped on Windows. The guard now folds case across the whole bundle (the current kit has no such pair — this closes the class). A tool file using one of the bundle's own names (the launcher file, `MANIFEST.json`, `SHA256SUMS.txt`, any letter case) likewise stops assembly instead of being overwritten. The assembler gained its own test suite (`bundle/tests`), run by CI next to the launcher's (launcher suite now 59 tests, assembler 7).
+
 ## [0.2.0] - 2026-10-20
 
 ### Added

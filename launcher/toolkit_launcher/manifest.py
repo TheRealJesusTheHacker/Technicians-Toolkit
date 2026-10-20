@@ -23,9 +23,14 @@ A bundled tool entry carries: name, job (one plain sentence), repo,
 version, artifact, sha256, source_release, readme, entrypoint,
 args (a fixed list, possibly empty), and optionally env (fixed
 environment variables; a value may start with the "{bundle}"
-placeholder for the bundle folder's own path) and prepare_dirs
+placeholder for the bundle folder's own path), prepare_dirs
 (bundle-relative folders to create before starting the tool — the
-portable Argus data folder is the first user of this).
+portable Argus data folder is the first user of this), and requires
+(bundle-relative files or folders that must also be present for
+the tool to count as ready — a one-folder tool's "_internal"
+support folder is the first user of this: the start file alone,
+with its support folder gone, is not a working tool and the card
+must not call it ready).
 """
 
 from __future__ import annotations
@@ -56,6 +61,7 @@ class ToolEntry:
     args: list = field(default_factory=list)
     env: dict = field(default_factory=dict)
     prepare_dirs: list = field(default_factory=list)
+    requires: list = field(default_factory=list)
 
 
 @dataclass
@@ -166,6 +172,15 @@ def _parse_tool(raw, status: str) -> ToolEntry:
             )
         entry.prepare_dirs = [
             _check_relative_path(p, f"folder to prepare for {name}") for p in prepare
+        ]
+        requires = raw.get("requires", [])
+        if not isinstance(requires, list):
+            raise ManifestError(
+                f"The manifest's required-files list for {name} is not written correctly."
+            )
+        entry.requires = [
+            _check_relative_path(p, f"required file or folder for {name}")
+            for p in requires
         ]
     return entry
 

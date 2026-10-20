@@ -9,4 +9,4 @@ bundle also runs on its own, straight from the bundle folder, with
 the launcher closed or deleted.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"

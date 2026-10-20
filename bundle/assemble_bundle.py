@@ -140,6 +140,19 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
             f"plain folder name, not {folder!r}."
         )
     readme_final = None
+    # Windows file names are case-insensitive: two bundle paths that
+    # differ only by letter case are the SAME file when the bundle
+    # is extracted on Windows, however distinct they look on the
+    # Linux machine that may run this assembly. Track every path
+    # already in the bundle — and every path this zip adds — by its
+    # folded name, so a case-only twin aborts here instead of
+    # silently overwriting its sibling on the owner's machine.
+    seen = {}
+    if bundle_root.is_dir():
+        for existing in bundle_root.rglob("*"):
+            if existing.is_file():
+                rel = existing.relative_to(bundle_root).as_posix()
+                seen[rel.lower()] = rel
     with zipfile.ZipFile(artifact) as zf:
         for info in zf.infolist():
             if info.is_dir():
@@ -151,12 +164,16 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
             elif folder:
                 member = f"{folder}/{member}"
             target = bundle_root / member
-            if target.exists():
+            if target.exists() or member.lower() in seen:
                 raise AssemblyError(
                     f"Collision while laying out {tool['name']}: '{member}' "
-                    "already exists in the bundle folder. Assembly stopped — "
-                    "collisions are resolved on purpose, never by overwrite."
+                    f"would overwrite '{seen.get(member.lower(), member)}' "
+                    "in the bundle folder (Windows treats names that "
+                    "differ only by letter case as the same file). "
+                    "Assembly stopped — collisions are resolved on "
+                    "purpose, never by overwrite."
                 )
+            seen[member.lower()] = member
             target.parent.mkdir(parents=True, exist_ok=True)
             with zf.open(info) as src, open(target, "wb") as dst:
                 shutil.copyfileobj(src, dst, 1 << 20)
@@ -185,7 +202,33 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
         fragment["env"] = tool["env"]
     if tool.get("prepare_dirs"):
         fragment["prepare_dirs"] = tool["prepare_dirs"]
+    if tool.get("requires"):
+        fragment["requires"] = tool["requires"]
     return fragment
+
+
+def check_reserved_names(bundle_root: Path, launcher_name: str) -> None:
+    """Refuse if a tool's files already claim a bundle-owned name.
+
+    The launcher file, MANIFEST.json, and SHA256SUMS.txt are written
+    by the assembler itself, after every tool is laid out. A tool
+    file already sitting at one of those names (in any letter case —
+    Windows cannot tell them apart) would be silently overwritten;
+    that is a collision like any other, so it stops assembly.
+    """
+    present = {}
+    if bundle_root.is_dir():
+        for existing in bundle_root.iterdir():
+            if existing.is_file():
+                present[existing.name.lower()] = existing.name
+    for reserved in (launcher_name, "MANIFEST.json", "SHA256SUMS.txt"):
+        if reserved.lower() in present:
+            raise AssemblyError(
+                f"A laid-out tool file already uses the bundle's own "
+                f"name '{present[reserved.lower()]}' — the assembler "
+                f"would have to overwrite it to add '{reserved}'. "
+                "Assembly stopped."
+            )
 
 
 def write_checksums(bundle_root: Path) -> Path:
@@ -236,7 +279,7 @@ def assemble(args) -> Path:
             for k in (
                 "name", "job", "repo", "version", "artifact", "sha256",
                 "source_release", "path", "readme", "entrypoint", "args",
-                "env", "prepare_dirs",
+                "env", "prepare_dirs", "requires",
             )
             if k in fragment
         }
@@ -247,6 +290,7 @@ def assemble(args) -> Path:
     if not launcher_src.is_file():
         raise AssemblyError(f"Launcher file not found: {launcher_src}")
     launcher_name = args.launcher_name or config["launcher"]["file"]
+    check_reserved_names(bundle_root, launcher_name)
     shutil.copyfile(launcher_src, bundle_root / launcher_name)
     print(f"launcher added: {launcher_name}")
 

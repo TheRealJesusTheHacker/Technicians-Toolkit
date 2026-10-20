@@ -43,3 +43,49 @@ def test_absent_and_linked_states_pass_through(tmp_path):
 def test_explicit_root_wins(tmp_path):
     assert locate_bundle_root(tmp_path) == tmp_path
     assert locate_bundle_root(str(tmp_path)) == tmp_path
+
+
+def test_gutted_support_folder_is_missing_not_ready(tmp_path):
+    """Regression pin (kit hunt, 2026-10-20): discovery used to
+    check only the start file, so a one-folder tool whose
+    _internal support folder was gutted (an interrupted unzip is
+    the owner's real first-run scenario) still got a "Ready."
+    card. A manifest may name files/folders the tool requires;
+    without them the card says what is missing."""
+    tool = bundled_tool(
+        name="NitroCore",
+        entrypoint="NitroCoreOptimizer.exe",
+        requires=["_internal"],
+    )
+    write_bundle(tmp_path, tools=[tool])
+    (tmp_path / "NitroCoreOptimizer.exe").write_bytes(b"fake tool")
+    states = discover(tmp_path, load_manifest(tmp_path))
+    assert states[0].state == "missing"
+    assert "_internal" in states[0].detail
+
+
+def test_required_support_folder_present_is_ready(tmp_path):
+    tool = bundled_tool(
+        name="NitroCore",
+        entrypoint="NitroCoreOptimizer.exe",
+        requires=["_internal"],
+    )
+    write_bundle(tmp_path, tools=[tool])
+    (tmp_path / "NitroCoreOptimizer.exe").write_bytes(b"fake tool")
+    internal = tmp_path / "_internal"
+    internal.mkdir()
+    (internal / "python311.dll").write_bytes(b"fake")
+    states = discover(tmp_path, load_manifest(tmp_path))
+    assert states[0].state == "ready"
+
+
+def test_nested_required_folder_missing_names_it(tmp_path):
+    tool = bundled_tool(
+        name="Charon",
+        entrypoint="Charon/Charon.exe",
+        requires=["Charon/_internal"],
+    )
+    _, states = make_ready_bundle(tmp_path, [tool])
+    # make_ready_bundle created only the entrypoint, not _internal.
+    assert states[0].state == "missing"
+    assert "Charon/_internal" in states[0].detail

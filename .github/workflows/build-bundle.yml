@@ -38,6 +38,9 @@ jobs:
           QT_QPA_PLATFORM: "offscreen"
         run: python -m pytest launcher/tests -q
 
+      - name: Assembler tests
+        run: python -m pytest bundle/tests -q
+
       - name: Build the launcher (one file)
         working-directory: launcher
         run: >

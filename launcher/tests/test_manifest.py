@@ -92,3 +92,15 @@ def test_prepare_dirs_escape_refused(tmp_path):
     write_bundle(tmp_path, tools=[bundled_tool(prepare_dirs=["../outside"])])
     with pytest.raises(ManifestError):
         load_manifest(tmp_path)
+
+
+def test_requires_accepted(tmp_path):
+    write_bundle(tmp_path, tools=[bundled_tool(requires=["_internal"])])
+    entry = load_manifest(tmp_path).tools[0]
+    assert entry.requires == ["_internal"]
+
+
+def test_requires_escape_refused(tmp_path):
+    write_bundle(tmp_path, tools=[bundled_tool(requires=["../outside"])])
+    with pytest.raises(ManifestError):
+        load_manifest(tmp_path)
