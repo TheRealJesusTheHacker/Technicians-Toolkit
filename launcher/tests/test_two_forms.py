@@ -24,7 +24,7 @@ APP_ENTRY = bundled_tool(
     name="Beerus", entrypoint="Beerus/Beerus.exe", readme="README-PORTABLE-Beerus.txt"
 )
 STICK_ENTRY = {
-    "name": "Beerus — Destruct Key Pro",
+    "name": "Beerus — Live Boot",
     "job": "Wipes drives completely, with proof it was done.",
     "note": "A bootable USB stick of its own — get it from the Beerus repo.",
 }
@@ -50,18 +50,18 @@ def test_two_forms_load_and_pair_with_states(tmp_path):
     by_name = {s.entry.name: s for s in states}
     assert by_name["Beerus"].state == "ready"
     assert by_name["Beerus"].entrypoint_path == tmp_path.resolve() / "Beerus" / "Beerus.exe"
-    assert by_name["Beerus — Destruct Key Pro"].state == "separate"
-    assert "bootable USB stick" in by_name["Beerus — Destruct Key Pro"].detail
+    assert by_name["Beerus — Live Boot"].state == "separate"
+    assert "bootable USB stick" in by_name["Beerus — Live Boot"].detail
 
 
 def test_two_forms_window_cards(qapp, tmp_path):
     _two_forms_bundle(tmp_path)
     window = build_window(tmp_path)
     cards = {c["entry"].name: c for c in window.tool_cards}
-    assert set(cards) == {"Beerus", "Beerus — Destruct Key Pro"}
+    assert set(cards) == {"Beerus", "Beerus — Live Boot"}
     assert cards["Beerus"]["button"].isEnabled()
     assert cards["Beerus"]["button"].text() == "Launch"
-    stick = cards["Beerus — Destruct Key Pro"]
+    stick = cards["Beerus — Live Boot"]
     assert not stick["button"].isEnabled()
     assert stick["button"].text() == "Bootable USB"
     window.close()
@@ -82,12 +82,12 @@ def test_two_forms_check_output_names_both(tmp_path, capsys):
     assert run_check(tmp_path) == 0
     out = capsys.readouterr().out
     assert "Beerus" in out and "ready" in out
-    assert "Beerus — Destruct Key Pro" in out and "separate" in out
+    assert "Beerus — Live Boot" in out and "separate" in out
 
 
 def test_about_text_tells_both_forms():
     assert "Beerus Portable, the app" in ABOUT_TEXT
-    assert "Destruct Key Pro" in ABOUT_TEXT
+    assert "Live Boot" in ABOUT_TEXT
     assert "certificates folder beside its own start file" in ABOUT_TEXT
     # The v0.1.0 claim — Beerus is not a folder in this bundle — is
     # false now that the app ships as files; it must not come back.

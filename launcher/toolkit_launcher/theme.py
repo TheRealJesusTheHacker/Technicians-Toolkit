@@ -7,8 +7,12 @@ Every text/background pairing used by the launcher, checked:
 - near-black text on the GREEN launch button: >9:1
 - RED (#ff7b72) on PANEL: ~7.6:1 — the brand's rare accent, used only
   for problem states (a missing tool, an incomplete bundle).
-No purple anywhere, ever. The frozen renders are pixel-checked
-against this palette before a bundle ships.
+The window itself carries no purple. The single violet in it is
+Beerus's identity stripe: his canonical violet, by the owner's
+namesake exception ("Beerus can have purple because it's
+appropriate", 2026-10-20) — the same exception his own app carries.
+The frozen renders are pixel-checked against this palette before a
+bundle ships.
 """
 
 BG = "#060a07"
@@ -22,6 +26,35 @@ GREEN_PRESSED = "#25b85c"
 GREEN_DARK_TEXT = "#04140a"
 RED = "#ff7b72"
 DISABLED_BG = "#131a14"
+
+# Namesake identity stripes: every tool in the kit carries its own
+# namesake color on its card — a slim stripe beside the state accent,
+# in the primary of the palette that tool's own app wears (the fleet
+# namesake palette program; worst-pair figures live with each tool).
+# The window stays Sentinel green on black; the stripes are the
+# tools' colors, not the house's.
+IDENTITY_STRIPES = {
+    "Argus": "#25cc8a",  # peacock emerald
+    "NitroCore": "#2ea3ff",  # nitrous azure
+    "VectorZip": "#33b5e8",  # blueprint cyan
+    "Charon": "#2fbfa8",  # Styx aqua
+    "Lazarus": "#f0a13c",  # ember amber
+    "Aegis": "#d29f3c",  # shield bronze
+    "Beerus": "#a478f7",  # canonical violet — the owner's exception
+}
+
+
+def stripe_for(name: str) -> str:
+    """The identity-stripe color for a card, by tool name.
+
+    A linked entry names the tool before its form ("Beerus — Live
+    Boot"), so the part before the em dash is tried too. A tool with
+    no namesake color gets the panel edge — present, but quiet.
+    """
+    if name in IDENTITY_STRIPES:
+        return IDENTITY_STRIPES[name]
+    head = name.split(" \u2014 ")[0]
+    return IDENTITY_STRIPES.get(head, PANEL_EDGE)
 
 STYLESHEET = f"""
 QMainWindow, QWidget#Root, QDialog {{

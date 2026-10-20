@@ -29,7 +29,7 @@ SEVEN = [
     bundled_tool(name="Beerus", entrypoint="Beerus/Beerus.exe"),
 ]
 STICK_ENTRY = {
-    "name": "Beerus — Destruct Key Pro",
+    "name": "Beerus — Live Boot",
     "job": "Wipes drives completely, with proof it was done.",
     "note": "A bootable USB stick of its own — get it from the Beerus repo.",
 }
@@ -57,7 +57,7 @@ def test_full_kit_loads_and_all_ready(tmp_path):
     by_name = {s.entry.name: s for s in states}
     for tool in SEVEN:
         assert by_name[tool["name"]].state == "ready", tool["name"]
-    assert by_name["Beerus — Destruct Key Pro"].state == "separate"
+    assert by_name["Beerus — Live Boot"].state == "separate"
     assert not any(s.state == "not_in_bundle" for s in states)
 
 
@@ -65,13 +65,13 @@ def test_full_kit_window_cards(qapp, tmp_path):
     _full_kit_bundle(tmp_path)
     window = build_window(tmp_path)
     cards = {c["entry"].name: c for c in window.tool_cards}
-    assert set(cards) == {t["name"] for t in SEVEN} | {"Beerus — Destruct Key Pro"}
+    assert set(cards) == {t["name"] for t in SEVEN} | {"Beerus — Live Boot"}
     for tool in SEVEN:
         card = cards[tool["name"]]
         assert card["button"].isEnabled(), tool["name"]
         assert card["button"].text() == "Launch", tool["name"]
         assert card["status"].text() == "Ready.", tool["name"]
-    stick = cards["Beerus — Destruct Key Pro"]
+    stick = cards["Beerus — Live Boot"]
     assert not stick["button"].isEnabled()
     assert stick["button"].text() == "Bootable USB"
     window.close()
@@ -97,7 +97,7 @@ def test_full_kit_check_output(tmp_path, capsys):
     for tool in SEVEN:
         assert f"- {tool['name']}" in out, tool["name"]
         assert f"{tool['name']} v1.0.0: ready" in out or "ready" in out
-    assert "Beerus — Destruct Key Pro" in out and "separate" in out
+    assert "Beerus — Live Boot" in out and "separate" in out
     assert "not_in_bundle" not in out
 
 
@@ -106,7 +106,7 @@ def test_about_text_claims_the_complete_kit():
     assert "Lazarus" in ABOUT_TEXT and "Aegis" in ABOUT_TEXT
     # Both Beerus forms stay told apart (see test_two_forms.py).
     assert "Beerus Portable, the app" in ABOUT_TEXT
-    assert "Destruct Key Pro" in ABOUT_TEXT
+    assert "Live Boot" in ABOUT_TEXT
 
 
 def test_about_dialog_fits_its_whole_text(qapp):

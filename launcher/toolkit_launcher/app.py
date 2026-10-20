@@ -32,7 +32,7 @@ ABOUT_TEXT = (
     "The kit is complete in this bundle: all seven tools of the line are "
     "here — Argus, NitroCore, VectorZip, Charon, Lazarus, Aegis, and the "
     "Beerus app — each in the portable form its maker released. The one "
-    "form that cannot be a folder, Beerus's bootable Destruct Key Pro, is "
+    "form that cannot be a folder, Beerus's bootable Live Boot, is "
     "accounted for below and in the manifest.\n\n"
     "This launcher is only a front door. Every tool also runs on its own, "
     "straight from this folder, with the launcher closed — starting a tool "
@@ -41,7 +41,7 @@ ABOUT_TEXT = (
     "in this bundle, securely wipes drives, files and folders, and free "
     "space on a machine that is already running, and keeps its certificates "
     "and reports in a certificates folder beside its own start file. The "
-    "Destruct Key Pro, its other form, is a bootable USB stick of its own — "
+    "Live Boot, its other form, is a bootable USB stick of its own — "
     "a drive is wiped by booting from the stick, for machines that are off "
     "or being decommissioned whole. Carry both sticks.\n\n"
     "Every file in this bundle was checked against its maker's published "
@@ -153,7 +153,7 @@ def build_window(root: Path, launcher: Launcher | None = None):
         QWidget,
     )
 
-    from .theme import GREEN, PANEL_EDGE, RED, STYLESHEET
+    from .theme import GREEN, PANEL_EDGE, RED, STYLESHEET, stripe_for
 
     window = QMainWindow()
     window.setWindowTitle("Technician's Toolkit — Sentinel Safeguard")
@@ -265,6 +265,12 @@ def build_window(root: Path, launcher: Launcher | None = None):
             )
             card_layout.addWidget(accent)
 
+            stripe = QWidget()
+            stripe.setObjectName("IdentityStripe")
+            stripe.setFixedWidth(3)
+            stripe.setStyleSheet(f"background: {stripe_for(entry.name)};")
+            card_layout.addWidget(stripe)
+
             content = QVBoxLayout()
             content.setContentsMargins(14, 12, 14, 12)
             content.setSpacing(4)
@@ -324,7 +330,13 @@ def build_window(root: Path, launcher: Launcher | None = None):
             card_layout.addLayout(content, stretch=1)
             cards.addWidget(card)
             window.tool_cards.append(
-                {"entry": entry, "state": state, "button": button, "status": status}
+                {
+                    "entry": entry,
+                    "state": state,
+                    "button": button,
+                    "status": status,
+                    "stripe": stripe,
+                }
             )
         cards.addStretch(1)
         scroll.setWidget(cards_widget)
