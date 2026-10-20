@@ -1,0 +1,3 @@
+# Runtime dependency of the suite launcher. Nothing else: the
+# launcher's own code is standard library only.
+PySide6==6.12.0
