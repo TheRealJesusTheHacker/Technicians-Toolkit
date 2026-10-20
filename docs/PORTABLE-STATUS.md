@@ -21,7 +21,7 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 
 | Tool | Label | Portable artifact | Where |
 |---|---|---|---|
-| Argus | **SHIPS TODAY** | `ArgusPortable.zip` | Argus releases (v1.2.3 and earlier) |
+| Argus | **SHIPS TODAY** | `ArgusPortable.zip` | Argus releases (v1.2.4 and earlier) |
 | NitroCore | **SHIPS TODAY** | `NitroCorePortable.zip` | NitroCore releases (v1.1.5) |
 | VectorZip | **SHIPS TODAY** | `VectorZipPortable.zip`, `VectorZipPortable-linux.zip` | VectorZip releases (v1.2.6) |
 | Charon | **SHIPS TODAY** | `CharonPortable.zip` | Charon releases (v1.0.1) |
@@ -51,7 +51,8 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 
 - **What the portable is:** `ArgusPortable.zip` — the frozen one-folder Argus app plus its portable launcher/readme, zipped. Unzip anywhere (folder or USB), run it, no install.
 - **Verified 2026-10-20:** the v1.2.3 release (published 2026-10-20) carries exactly four assets — `Argus.exe` (55,034,217 B), **`ArgusPortable.zip` (54,671,189 B)**, `Argus.deb` (81,837,140 B), `SHA256SUMS.txt` (236 B). v1.2.2 carries it too (54,665,614 B).
-- **Download:** https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3
+- **Verified 2026-10-20 (v1.2.4 field fixes):** the v1.2.4 release (release `418453637`, published 2026-10-20) carries exactly four assets — `Argus.exe` (55,043,217 B), **`ArgusPortable.zip` (54,680,969 B)**, `Argus.deb` (81,846,306 B), `SHA256SUMS.txt` (236 B) — and all three downloads were re-downloaded after publishing and re-verified against the published sums. It fixes the three findings from the owner's first real-machine run of bundle v0.2.0. (1) The first-run wizard's self-test failed with "could not read file: Invalid argument" and reported the harmless EICAR test file Clean: a read refused by the machine's resident security stack fell outside the scanner's blocked-read set, so the file was waved through — now any read failure that is not "the file is not there" is reported as not checked, never Clean, on every scan surface, and the self-test retries once and then honestly reports that another program kept it from reading the test file. (2) Argus flagged the bundle's own launcher and siblings as Malicious — every PyInstaller-built tool carries the bootloader traits Argus scores — so Argus now verifies its Sentinel family by fingerprint against the bundle's own `SHA256SUMS.txt` (a verified tool's traits are listed, not scored; signature and pattern-rule detections still fire in full; a changed fingerprint on a tool's place is treated as tampering), and the scoring model was recalibrated so packaging traits corroborate but cannot convict on their own. (3) Argus flagged itself in portable mode: the running-program identity proof was gated on the installed address, and it now applies wherever the portable program actually lives. 693 tests plus 35 new field-fix regression tests, green on Windows CI before tagging. Still owed on real hardware: the owner re-runs the wizard self-test after updating and confirms Argus running beside the bundle flags nothing in its own kit.
+- **Download:** https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.4
 - **Queued:** nothing. Argus is the reference standard the other tools' portables are modeled on.
 
 ## NitroCore — SHIPS TODAY
