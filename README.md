@@ -39,7 +39,7 @@ This repository is the bundle's home — its documentation, its live portable-st
 | **Charon** | Update — driver updates, restore point first | ✅ **Ships today** | [CharonPortable.zip in v1.0.3](https://github.com/TheRealJesusTheHacker/Charon.exe/releases/tag/v1.0.3) |
 | **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | ✅ **Ships today** | [LazarusPortable.zip in v1.0.1](https://github.com/TheRealJesusTheHacker/Lazarus.exe/releases/tag/v1.0.1) |
 | **Aegis** | Protect — file encryption & password vault | ✅ **Ships today** | [AegisPortable.zip in v1.0.3](https://github.com/TheRealJesusTheHacker/Aegis.exe/releases/tag/v1.0.3) |
-| **Beerus** | Destroy — secure drive destruction | ✅ **Ships today** — Beerus Portable, the app edition, is in this bundle; the Destruct Key Pro USB is 💾 by design | [BeerusPortable.zip in v0.6.1](https://github.com/TheRealJesusTheHacker/Beerus.exe/releases/tag/v0.6.1) |
+| **Beerus** | Destroy — secure drive destruction | ✅ **Ships today** — Beerus Portable, the app edition, is in this bundle; the Destruct Key Pro USB is 💾 by design | [BeerusPortable.zip in v0.6.2](https://github.com/TheRealJesusTheHacker/Beerus.exe/releases/tag/v0.6.2) |
 
 The detailed, dated tracker — what each portable is, where it downloads, and what's queued next — lives in **[docs/PORTABLE-STATUS.md](docs/PORTABLE-STATUS.md)**. It is updated on every audit, not on a schedule of good intentions.
 
