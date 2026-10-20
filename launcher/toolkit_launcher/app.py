@@ -29,6 +29,11 @@ ABOUT_TEXT = (
     "This folder is the Technician's Toolkit — Sentinel Safeguard's medic-kit "
     "line in portable form. Nothing here is installed: every tool runs from "
     "this folder, and you can take the folder with you on a USB stick.\n\n"
+    "The kit is complete in this bundle: all seven tools of the line are "
+    "here — Argus, NitroCore, VectorZip, Charon, Lazarus, Aegis, and the "
+    "Beerus app — each in the portable form its maker released. The one "
+    "form that cannot be a folder, Beerus's bootable Destruct Key Pro, is "
+    "accounted for below and in the manifest.\n\n"
     "This launcher is only a front door. Every tool also runs on its own, "
     "straight from this folder, with the launcher closed — starting a tool "
     "here starts the same program you would start by hand.\n\n"
@@ -113,6 +118,22 @@ def build_about_dialog(parent=None):
     close.setObjectName("AboutToggle")
     close.clicked.connect(dialog.accept)
     layout.addWidget(close, alignment=Qt.AlignmentFlag.AlignRight)
+    # Size the dialog to its text: the About copy is the bundle's own
+    # explanation and must never be clipped by a fixed height. The
+    # label's height comes from its own font metrics at the dialog's
+    # text width; the dialog then adjusts around it. Polishing first
+    # is what makes the metrics the stylesheet's real ones.
+    dialog.ensurePolished()
+    text_width = dialog.width() - 44  # the layout's left + right margins
+    needed = text.fontMetrics().boundingRect(
+        0, 0, text_width, 100000, Qt.TextFlag.TextWordWrap, ABOUT_TEXT
+    ).height()
+    text.setFixedHeight(needed + 4)
+    dialog.adjustSize()
+    # adjustSize may narrow the dialog to its size hint; the label's
+    # height was measured at the width set above, so restore it —
+    # every other row is one line tall at either width.
+    dialog.resize(560, dialog.height())
     return dialog
 
 
