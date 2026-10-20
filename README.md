@@ -77,7 +77,7 @@ Compare the output to the bundle's published checksum before you trust the stick
 
 ## Status
 
-The bundle is in assembly. One tool's portable ships today (Argus), three are packaging-ready and land with their next releases (NitroCore, VectorZip, Charon), two are committed roadmap deliverables (Lazarus, Aegis), and one is portable by design (Beerus). Bundle releases begin as soon as the packaging-ready tools cut their next releases; the roadmap in [docs/ROADMAP.md](docs/ROADMAP.md) defines how bundle versions track the manifest of tool versions they carry.
+The bundle is in assembly. Four tools' portables ship today (Argus, NitroCore, VectorZip, Charon — the three former packaging-ready tools all shipped on 2026-10-20: NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1), two are committed roadmap deliverables (Lazarus, Aegis), and one is portable by design (Beerus). Bundle releases begin now that the shipping tools have current releases; the roadmap in [docs/ROADMAP.md](docs/ROADMAP.md) defines how bundle versions track the manifest of tool versions they carry.
 
 ## License
 
