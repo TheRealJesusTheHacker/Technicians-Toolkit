@@ -27,7 +27,7 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 | Charon | **SHIPS TODAY** | `CharonPortable.zip` | Charon releases (v1.0.3) |
 | Lazarus | **SHIPS TODAY** | `LazarusPortable.zip` | Lazarus releases (v1.0.2) |
 | Aegis | **SHIPS TODAY** | `AegisPortable.zip` | Aegis releases (v1.0.3) |
-| Beerus | **BY DESIGN + SHIPS TODAY** | The bootable Destruct Key Pro USB image itself, plus Beerus Portable — the no-install Windows app (BeerusPortable.zip in v0.5.1) | Beerus repo — flash the image and boot it, or unzip the app and run it |
+| Beerus | **BY DESIGN + SHIPS TODAY** | The bootable Live Boot USB image itself, plus Beerus Portable — the no-install Windows app (BeerusPortable.zip in v0.5.1) | Beerus repo — flash the image and boot it, or unzip the app and run it |
 
 ---
 
