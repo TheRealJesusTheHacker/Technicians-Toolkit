@@ -10,7 +10,7 @@ It is a front door, never a replacement. Every tool in the bundle also runs on i
 
 - **Bundled tools** — name, version, one plain sentence about the job, and a **Launch** button that starts the tool's own program from this folder.
 - **Tools not in this bundle yet** — honest cards (no button) saying when they join. The kit's completeness is shown, never faked.
-- **Beerus** — a card explaining it lives on its own bootable USB stick. A drive is wiped by booting from that stick, never from inside this bundle.
+- **Beerus, twice — once per form.** Beerus Portable, the app, is a bundled tool with a **Launch** button like any other. The Destruct Key Pro, its bootable form, gets its own card ("Beerus — Destruct Key Pro") explaining it lives on its own bootable USB stick — a drive is wiped by booting from that stick, for machines that are off or being decommissioned whole. The two cards are told apart by name, and the About box tells both forms.
 - **The bundle's version**, the date it was put together, and an **About** box in plain language.
 
 Every state is designed: if the manifest is missing or damaged the window says so plainly and what to do; if a tool's files are missing its card says so; if a start fails, the card explains it. There are no placeholder buttons and no dead ends.
