@@ -18,7 +18,7 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 | Tool | Label | Portable artifact | Where |
 |---|---|---|---|
 | Argus | **SHIPS TODAY** | `ArgusPortable.zip` | Argus releases (v1.2.3 and earlier) |
-| NitroCore | **PACKAGING READY** | `NitroCorePortable.zip` | Ships with the next release after v1.1.3 |
+| NitroCore | **SHIPS TODAY** | `NitroCorePortable.zip` | NitroCore releases (v1.1.4) |
 | VectorZip | **PACKAGING READY** | `VectorZipPortable.zip`, `VectorZipPortable-linux.zip` | Ships with the next tagged release after v1.2.4 |
 | Charon | **PACKAGING READY** | `CharonPortable.zip` | Ships with Charon v1.0.1, once its release gate is green |
 | Lazarus | **ROADMAP** | Portable edition (Argus Portable pattern) | Named deliverable, Lazarus Phase 5 (packaging) |
@@ -34,13 +34,15 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 - **Download:** https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3
 - **Queued:** nothing. Argus is the reference standard the other tools' portables are modeled on.
 
-## NitroCore — PACKAGING READY
+## NitroCore — SHIPS TODAY
 
-- **What the portable will be:** `NitroCorePortable.zip` — a PyInstaller **one-folder** build of NitroCoreOptimizer (exe + `_internal/`) with a `README-PORTABLE.txt` inside, produced by the Windows release workflow.
-- **In the repo (2026-10-20):** `NitroCore/nitrocore-portable.spec` (commit `e320466c82`), `NitroCore/portable/README-PORTABLE.txt` (`db30c242c2`), and the extended `.github/workflows/release.yml` (`c6e22443fc`) — it builds both editions on `windows-latest`, and `SHA256SUMS.txt` now covers the exe **and** the portable zip. READMEs and CHANGELOG updated to match (`2e6d9cbe1d`, `36221bc361`, `1713a1f53`).
-- **Audit note:** all 7 existing releases (v1.0.0–v1.1.3) carry only `NitroCoreOptimizer.exe` + `SHA256SUMS.txt` — no portable exists yet, and none is claimed. A zipapp was rejected on inspection: NitroCore is a Windows GUI/system tool on pywin32 — a zipapp would not be a credible portable.
+- **What the portable is:** `NitroCorePortable.zip` — a PyInstaller **one-folder** build of NitroCoreOptimizer (exe + `_internal/`) with a `README-PORTABLE.txt` inside, produced by the Windows release workflow. Unzip anywhere (folder or USB), run it, no install.
+- **Verified 2026-10-20:** the v1.1.4 release (published 2026-10-20) carries exactly three assets — `NitroCoreOptimizer.exe` (12,314,890 B), **`NitroCorePortable.zip` (12,619,284 B)**, `SHA256SUMS.txt` (179 B), and `SHA256SUMS.txt` covers the portable zip as well as the exe. A proof `workflow_dispatch` run of the Release workflow (run 39386879947) went green before the tag, and the v1.1.4 tag run (39387160608) succeeded.
+- **Download:** https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.4
+- **In the repo (2026-10-20):** `NitroCore/nitrocore-portable.spec` (commit `e320466c82`), `NitroCore/portable/README-PORTABLE.txt` (`db30c242c2`), and the extended `.github/workflows/release.yml` (`c6e22443fc`) — it builds both editions on `windows-latest`, and `SHA256SUMS.txt` covers the exe **and** the portable zip. READMEs and CHANGELOG updated to match. A zipapp was rejected on inspection: NitroCore is a Windows GUI/system tool on pywin32 — a zipapp would not be a credible portable.
+- **Audit note:** the 7 earlier releases (v1.0.0–v1.1.3) carry only `NitroCoreOptimizer.exe` + `SHA256SUMS.txt` — v1.1.4 is the first release with the portable zip.
 - **Honest footprint note:** the portable runs without installing, but NitroCore still writes its logs and registry-undo snapshots to `%APPDATA%\NitroCore`. That is stated plainly in the portable's own readme, not hidden.
-- **Next steps to SHIPS TODAY:** (1) one `workflow_dispatch` run of the Release workflow to prove the portable build green on the Windows runner (not yet executed); (2) the next release (after v1.1.3) attaches `NitroCorePortable.zip` automatically; (3) verify it in that release's asset list.
+- **Queued:** nothing for the portable. NitroCore's portable ships today.
 
 ## VectorZip — PACKAGING READY
 

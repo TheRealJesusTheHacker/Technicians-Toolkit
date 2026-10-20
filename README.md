@@ -23,7 +23,7 @@ This repository is the bundle's home — its documentation, its live portable-st
 | Tool | Job | Portable status | Get it |
 |---|---|---|---|
 | **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.3](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.3) |
-| **NitroCore** | Tune — system optimization | 🔧 **Packaging ready** — first portable ships with the next release | [NitroCore](https://github.com/TheRealJesusTheHacker/NitroCore) |
+| **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.4](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.4) |
 | **VectorZip** | Pack — file archives & compression | 🔧 **Packaging ready** — portable zips ship with the next tagged release | [VectorZip](https://github.com/TheRealJesusTheHacker/VectorZip) |
 | **Charon** | Update — driver updates, restore point first | 🔧 **Packaging ready** — first portable ships with its next release | [Charon](https://github.com/TheRealJesusTheHacker/Charon.exe) |
 | **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | 🗺️ **Roadmap** — named deliverable of its packaging phase | [Lazarus](https://github.com/TheRealJesusTheHacker/Lazarus.exe) |
@@ -35,7 +35,7 @@ The detailed, dated tracker — what each portable is, where it downloads, and w
 ### Meet the kit
 
 - **Argus** — the hundred-eyed watcher. Sentinel's antivirus and malware detector: signature database, heuristic engine, real-time watcher, encrypted quarantine vault, and a full GUI. Its portable edition, `ArgusPortable.zip`, already ships in every Argus release.
-- **NitroCore** — the tune-up tool. Windows system optimization with an undo trail. Its portable build (a one-folder edition zipped as `NitroCorePortable.zip`) is wired into its release workflow and ships starting with the next release after v1.1.3.
+- **NitroCore** — the tune-up tool. Windows system optimization with an undo trail. Its portable edition (a one-folder edition zipped as `NitroCorePortable.zip`) ships as of [v1.1.4](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.4).
 - **VectorZip** — the pack tool. A fast archive and compression utility with its own `.vzip` format. Its release workflow now assembles `VectorZipPortable.zip` (and a Linux variant) for every future tagged release.
 - **Charon** — the ferryman. A Windows driver updater with one non-negotiable rule: *nobody crosses without paying the toll* — a system restore point is created **and verified** before any driver is applied. Its portable packaging is built and wired; the first `CharonPortable.zip` ships with its next release.
 - **Lazarus** — the recovery tool. *"Dead isn't gone."* Restore files and folders by date, undelete with honest per-file odds, clone and salvage dying drives, and unlock encrypted volumes with the owner's own key. Its portable edition is a named deliverable of its packaging phase.
