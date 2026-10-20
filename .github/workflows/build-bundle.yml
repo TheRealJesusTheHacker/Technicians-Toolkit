@@ -1,0 +1,111 @@
+name: Build bundle
+
+# The bundle pipeline: test the launcher, build it on Windows,
+# assemble the bundle from the tools' own releases (hash-verified),
+# prove the built zip, run the shipped launcher's own --check against
+# the shipped bundle, and — on a version tag — publish the release.
+#
+# A manual run (workflow_dispatch) does everything except publish,
+# and uploads the bundle as a workflow artifact instead: the proof
+# run before any tag.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: windows-latest
+    steps:
+      - name: Check out the bundle repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the launcher build environment
+        run: pip install -r launcher/requirements-ci.txt
+
+      - name: Launcher tests (offscreen)
+        env:
+          QT_QPA_PLATFORM: "offscreen"
+        run: python -m pytest launcher/tests -q
+
+      - name: Build the launcher (one file)
+        working-directory: launcher
+        run: >
+          pyinstaller --noconfirm
+          --distpath ../dist/launcher
+          --workpath ../build/launcher
+          TechniciansToolkit.spec
+
+      - name: Assemble the bundle
+        run: >
+          python bundle/assemble_bundle.py assemble
+          --download-dir downloads
+          --work-dir assembly
+          --out-dir dist
+          --launcher-file dist/launcher/TechniciansToolkit.exe
+
+      - name: Verify the assembled bundle
+        run: >
+          python bundle/assemble_bundle.py verify
+          --zip dist/TechniciansToolkit-v0.1.0.zip
+          --work-dir assembly
+
+      - name: Shipped launcher against the shipped bundle
+        shell: pwsh
+        run: |
+          Expand-Archive dist/TechniciansToolkit-v0.1.0.zip -DestinationPath smoke -Force
+          $proc = Start-Process -FilePath "smoke/TechniciansToolkit/TechniciansToolkit.exe" -ArgumentList "--check" -Wait -PassThru -NoNewWindow
+          if ($proc.ExitCode -ne 0) { throw "The shipped launcher's --check failed with exit code $($proc.ExitCode)" }
+          Write-Host "Shipped launcher --check passed against the shipped bundle."
+
+      - name: Upload the bundle (proof runs)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TechniciansToolkit-bundle
+          path: |
+            dist/TechniciansToolkit-v0.1.0.zip
+            dist/SHA256SUMS.txt
+
+      - name: Publish the bundle release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > release-notes.md <<'EOF'
+          **The first Technician's Toolkit bundle.** One zip that opens to one folder — the whole kit in one place, plus the suite launcher in the same folder.
+
+          ## In this bundle
+
+          | Tool | Version | Form |
+          |---|---|---|
+          | Argus | 1.2.3 | Portable — `Argus.exe` (+ its portable-mode starter) |
+          | NitroCore | 1.1.4 | Portable — `NitroCoreOptimizer.exe` + its `_internal/` |
+          | VectorZip | 1.2.5 | Portable — `VectorZip.exe` |
+          | Charon | 1.0.1 | Portable — in its own `Charon/` folder, as it ships |
+          | **Suite launcher** | **0.1.0** | `TechniciansToolkit.exe` — one window over the kit |
+          | Lazarus | — | Not in this bundle yet (joins when its portable edition ships) |
+          | Aegis | — | Not in this bundle yet (joins when its portable edition ships, after its security audit) |
+          | Beerus | — | Never a folder: the bootable Destruct Key Pro is its own USB stick |
+
+          Every tool also runs standalone from the bundle folder — the launcher is a front door, not a lock. Every file inside was verified against its maker's published checksums before assembly; the bundle's own `MANIFEST.json` + `SHA256SUMS.txt` (inside the folder) and the `SHA256SUMS.txt` attached to this release (covering the zip) let you verify it again.
+
+          One name was qualified, openly: each portable edition carries a `README-PORTABLE.txt` with different contents, so in the bundle they are `README-PORTABLE-<Tool>.txt` — contents unchanged. The manifest records it.
+
+          *Built by Sentinel Safeguard LLC — Security For Everyone.*
+          EOF
+          gh release create "${{ github.ref_name }}" \
+            dist/TechniciansToolkit-v0.1.0.zip dist/SHA256SUMS.txt \
+            --title "Technician's Toolkit ${{ github.ref_name }}" \
+            --notes-file release-notes.md
