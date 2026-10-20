@@ -2,6 +2,18 @@
 
 All notable changes to the Technician's Toolkit — the bundle, its launcher, and its assembly tooling. Bundle versions are manifests: a version names exactly the tool versions inside it (see docs/ROADMAP.md).
 
+## [0.2.0] - 2026-10-20
+
+### Added
+
+- **Beerus Portable joins the bundle as files:** the second bundle carries five portables — the v0.1.0 four (Argus v1.2.3, NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1, unchanged) plus **Beerus Portable v0.4.0**, its artifact verified against Beerus's own release checksums before assembly like every other tool's. The manifest now accounts for Beerus once per form: the app as a bundled tool (start file `Beerus/Beerus.exe`), and the bootable Destruct Key Pro as a link — never bundled as files. Lazarus and Aegis remain accounted for as not in this bundle yet.
+- **Launcher v0.2.0:** the cards and the About box tell Beerus's two forms apart — Beerus Portable launchable from its card, "Beerus — Destruct Key Pro" as an honest no-button card for the bootable stick, and the About text now describes both forms (including where Beerus Portable keeps its certificates and reports: a `certificates` folder beside its start file). The dual-form manifest shape is pinned by new tests (39 in the suite, up from 34).
+
+### Notes
+
+- **A second collision, resolved openly:** Beerus Portable and NitroCore are both one-folder apps whose support folder is named `_internal`, and both zips put it at the bundle's top level — two different support folders cannot share one name in one folder. Beerus therefore sits in a `Beerus/` folder inside the bundle (the same shape Charon ships in), its files byte for byte as released; only where they sit is different. The assembler gained a per-tool `folder` pin in `bundle/tools.json` for exactly this — one plain folder name, never claimed by two tools, refused before layout otherwise — and the answer is recorded in the bundle's manifest notes so it travels with the bundle. The assembler still aborts on any other overwrite.
+- The v0.1.0 entry below stands as written: in that bundle Beerus was linked only, and `tools/README.md`'s layout index has been rewritten for the two-forms reality with this release.
+
 ## [0.1.0] - 2026-10-20
 
 ### Added
