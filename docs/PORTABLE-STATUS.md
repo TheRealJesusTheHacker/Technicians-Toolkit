@@ -19,7 +19,7 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 |---|---|---|---|
 | Argus | **SHIPS TODAY** | `ArgusPortable.zip` | Argus releases (v1.2.3 and earlier) |
 | NitroCore | **SHIPS TODAY** | `NitroCorePortable.zip` | NitroCore releases (v1.1.4) |
-| VectorZip | **PACKAGING READY** | `VectorZipPortable.zip`, `VectorZipPortable-linux.zip` | Ships with the next tagged release after v1.2.4 |
+| VectorZip | **SHIPS TODAY** | `VectorZipPortable.zip`, `VectorZipPortable-linux.zip` | VectorZip releases (v1.2.5) |
 | Charon | **PACKAGING READY** | `CharonPortable.zip` | Ships with Charon v1.0.1, once its release gate is green |
 | Lazarus | **ROADMAP** | Portable edition (Argus Portable pattern) | Named deliverable, Lazarus Phase 5 (packaging) |
 | Aegis | **ROADMAP** | Portable edition (Argus Portable pattern) | Named deliverable, Aegis Phase 5 (packaging, after the security audit gate) |
@@ -44,12 +44,13 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 - **Honest footprint note:** the portable runs without installing, but NitroCore still writes its logs and registry-undo snapshots to `%APPDATA%\NitroCore`. That is stated plainly in the portable's own readme, not hidden.
 - **Queued:** nothing for the portable. NitroCore's portable ships today.
 
-## VectorZip — PACKAGING READY
+## VectorZip — SHIPS TODAY
 
-- **What the portable will be:** `VectorZipPortable.zip` (Windows) and `VectorZipPortable-linux.zip` (Linux) — the standalone VectorZip binary plus `README-PORTABLE.txt`, assembled by a stdlib-only script, `packaging/portable/build-portable.py`, that both release jobs and local builds share.
-- **In the repo (2026-10-20):** `packaging/portable/build-portable.py` (`97994dc9fe`), `packaging/portable/README-PORTABLE.txt` (`90299f6afa`), extended `.github/workflows/release.yml` (`298d26fed7`), README (`996bc4dbab`) and CHANGELOG (final HEAD `148aec4fb1`) updated. The assembly script was proven locally end-to-end (valid zip, exec bit preserved), and the tool itself was re-verified from live source with a byte-identical compress/decompress round trip.
-- **Audit note:** all 7 releases (v1.0.0–v1.2.4) carry the one-file binaries (`VectorZip.exe`, `VectorZip`) + per-platform checksums — those binaries are already single-file and download-and-run, but there is no portable *package*, and none is claimed. A zipapp was rejected: it could only cover the CLI, never the PyQt6 GUI that is the shipped product.
-- **Next step to SHIPS TODAY:** the next tagged release (v1.2.5 or later) — the workflow assembles and uploads both portable zips with checksums and attestations; verify the two names in that release's asset list.
+- **What the portable is:** `VectorZipPortable.zip` (Windows) and `VectorZipPortable-linux.zip` (Linux) — the standalone VectorZip binary plus `README-PORTABLE.txt`, assembled by a stdlib-only script, `packaging/portable/build-portable.py`, that both release jobs and local builds share. Unzip anywhere (folder or USB), run it, no install.
+- **Verified 2026-10-20:** the v1.2.5 release (published 2026-10-20) carries exactly six assets — `VectorZip.exe` (36,818,617 B), **`VectorZipPortable.zip` (36,819,731 B)**, `SHA256SUMS-windows.txt` (170 B), `VectorZip` (68,134,464 B), **`VectorZipPortable-linux.zip` (68,135,547 B)**, `SHA256SUMS-linux.txt` (170 B) — and each platform's `SHA256SUMS-*.txt` covers its portable zip as well as the binary. The Release workflow run for the tag (39387374046; Windows and Linux jobs) completed success.
+- **Download:** https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.5
+- **Audit note:** all 7 earlier releases (v1.0.0–v1.2.4) carried only the one-file binaries (`VectorZip.exe`, `VectorZip`) + per-platform checksums — no portable *package* was claimed for them. v1.2.5 is the first release with the portable zips.
+- **Queued:** nothing for the portable. VectorZip's portable ships today.
 
 ## Charon — PACKAGING READY (release gate currently red — read on)
 
