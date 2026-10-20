@@ -1,6 +1,8 @@
 # Portable Status — The Living Tracker
 
-**Last audit: 2026-10-20** (fleet-wide portable-mandate audit; every entry below was verified against the tool's live repository and release lists that night — not copied from README claims). **Round-2 update, later the same day:** the three packaging-ready tools shipped their portables — NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1 (the last also carrying the Windows ledger-lock fix) — each verified against its live release asset list below.
+**Last audit: 2026-10-20** (fleet-wide portable-mandate audit; every entry below was verified against the tool's live repository and release lists that night — not copied from README claims). **Round-2 update, later the same day:** the three packaging-ready tools shipped their portables — NitroCore v1.1.4, VectorZip v1.2.5, Charon v1.0.1 (the last also carrying the Windows ledger-lock fix) — each verified against its live release asset list below. **Phase-1 sync, later the same day:** the three in-development tools each completed Phase 1 and cut v0.2.0 — Lazarus (snapshot store + restore engine, 63 tests), Beerus (wipe engine + consent gates, 188 tests), Aegis (Vault core, 179 tests) — each verified against the tool's live repo (README status, CHANGELOG, roadmap as-built note). Their portable labels are unchanged — the portables still ship at their packaging phases — and their sections below carry the dated entries.
+
+> **Sync rule (standing, set 2026-10-20):** whenever a member tool's repo is updated, the Technician's Toolkit is updated in the same change-set to match it. A member update is not complete until the Toolkit agrees with it — this tracker is where that agreement is recorded.
 
 This file tracks one question per medic-kit tool: *what is its portable edition, where does it download, and what is queued next?* It is updated on every audit. If a status here and a tool's own README disagree, this tracker is wrong until re-audited — flag it.
 
@@ -66,20 +68,23 @@ This file tracks one question per medic-kit tool: *what is its portable edition,
 
 - **What the portable will be:** a portable no-install edition (folder/USB, Argus Portable pattern) shipping alongside the installer.
 - **Committed 2026-10-20:** `docs/ROADMAP.md` (`6ae571e2aa`) names the portable edition as a **Phase 5 deliverable** — "a committed Phase 5 deliverable, not a backlog option" — and the README's Status section says so too (`ceeb65e9c8`). The only backlog line left is the later Technician's Toolkit USB *bundling* of that edition.
-- **Next step:** Lazarus's build phases proceed in order (restore engine first — it is the flagship); the portable lands with Phase 5 packaging.
+- **Sync 2026-10-20:** Phase 1 is complete and Lazarus is at **v0.2.0** (HEAD `28a6b642`) — the versioned snapshot store and restore engine are built, with a working CLI (`lazarus init / snap / list / verify / restore`), a 63-test suite, and the phase's audit cycle closed (findings fixed and re-probed — see Lazarus's CHANGELOG and the roadmap's as-built note). No Lazarus release is published yet; v0.2.0 is an in-tree development version. Portable label unchanged: **ROADMAP**.
+- **Next step:** Phase 2 (undelete + drive rescue); the portable lands with Phase 5 packaging.
 
 ## Aegis — ROADMAP
 
 - **What the portable will be:** a portable no-install edition (folder/USB, Argus Portable pattern) shipping alongside the installer at Phase 5 — **including the portable password vault**: your vault on a USB stick, no install, usable on the machine in front of you. The roadmap names that a headline use case, not an afterthought.
 - **Committed 2026-10-20:** `docs/ROADMAP.md` (`6b7ff413e4`) names the portable edition as a **Phase 5 packaging deliverable**, explicitly gated on Phase 5's independent security audit passing; the README's Status section carries the same commitment (`abc65b88ea`).
-- **Next step:** Aegis's build phases proceed in order; the portable is built and audited with Phase 5 — it does not ship before the audit gate, by design.
+- **Sync 2026-10-20:** Phase 1 is complete and Aegis is at **v0.2.0** (HEAD `6012dfbd`) — the Vault core is built: sealed `.aegis` vault files behind one master password, Argon2id key derivation (RFC 9106 first profile), the setup warning and printable recovery key, and a 179-test suite. A full self-audit cycle (audit → fix → re-audit) closed before the version was cut and changed the design — per-path wrap authentication, salt rotation on credential change, contents bound to the current wrapped keys (see Aegis's CHANGELOG, Security section). That self-audit does **not** replace the Phase 5 independent audit gate. No Aegis release is published yet. Portable label unchanged: **ROADMAP**.
+- **Next step:** Phase 2 (the password vault core, on the same crypto core); the portable is built and audited with Phase 5 — it does not ship before the audit gate, by design.
 
 ## Beerus — BY DESIGN
 
 - **What the portable is:** Beerus's portable form **is** the bootable Destruct Key Pro USB image itself — flash the image to a USB, boot the target machine from it, wipe, verify, certify. There is no separate portable download or installer, and there never will be: a drive-destruction tool you boot *instead of* the suspect OS is portable by construction.
 - **Made explicit 2026-10-20:** Beerus's README already described the bootable-USB design unambiguously but never used the word "portable"; one additive commit (`289c510a77`) added the explicit line: *"Beerus's portable edition is the bootable USB image itself — the Destruct Key Pro USB is its portable form, with no separate portable download or installer."*
 - **Bundle handling:** the Technician's Toolkit never bundles Beerus as files. The bundle links Beerus's repo/image; the key stays its own image, flashed by Beerus's own process.
-- **Next step:** Beerus's own build phases (wipe engine → verification/certificates → bootable image definition → boot UI → hardware validation).
+- **Sync 2026-10-20:** Phase 1 is complete and Beerus is at **v0.2.0** (HEAD `348bbdfc`) — drive inventory, NIST 800-88 method selection, and the consent gates are built; 188 tests, all against synthetic targets (the suite cannot touch a real drive), with the phase's safety-audit findings (F1–F12) fixed and re-audited. The real-drive executor ships disarmed (two-factor arming) until the boot-image entry point arms it in a later phase. No Beerus release is published yet. Portable label unchanged: **BY DESIGN**.
+- **Next step:** Phase 2 (verification + certificate of destruction), then the bootable image definition in Phase 3.
 
 ---
 
