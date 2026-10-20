@@ -1,0 +1,74 @@
+name: Kit-hunt probe (temporary)
+
+# Temporary evidence workflow for the 2026-10-20 kit-wide bug hunt.
+# Manual dispatch only; publishes nothing; removed from main once
+# the hunt's evidence is collected.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the bundle repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the launcher build environment
+        run: pip install -r launcher/requirements-ci.txt
+
+      - name: Test suites (launcher + assembler, offscreen)
+        env:
+          QT_QPA_PLATFORM: "offscreen"
+        run: python -m pytest launcher/tests bundle/tests -q
+
+      - name: Build the launcher (one file)
+        working-directory: launcher
+        run: >
+          pyinstaller --noconfirm
+          --distpath ../dist/launcher
+          --workpath ../build/launcher
+          TechniciansToolkit.spec
+
+      - name: Assemble the real bundle
+        run: >
+          python bundle/assemble_bundle.py assemble
+          --download-dir downloads
+          --work-dir assembly
+          --out-dir dist
+          --launcher-file dist/launcher/TechniciansToolkit.exe
+
+      - name: Verify the assembled bundle
+        run: >
+          python bundle/assemble_bundle.py verify
+          --zip dist/TechniciansToolkit-v1.0.0.zip
+          --work-dir assembly
+
+      - name: Spawn probe against the real bundle
+        run: python probe/kithunt_probe.py
+
+      - name: Frozen launcher against the shipped bundle
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: "offscreen"
+        run: |
+          Expand-Archive dist/TechniciansToolkit-v1.0.0.zip -DestinationPath smoke -Force
+          $proc = Start-Process -FilePath "smoke/TechniciansToolkit/TechniciansToolkit.exe" -ArgumentList "--check" -Wait -PassThru -NoNewWindow
+          Write-Host "frozen --check exit code: $($proc.ExitCode)"
+          if ($proc.ExitCode -ne 0) { throw "frozen --check failed" }
+          $gui = Start-Process -FilePath "smoke/TechniciansToolkit/TechniciansToolkit.exe" -PassThru
+          Start-Sleep -Seconds 6
+          $gui.Refresh()
+          Write-Host "frozen GUI still running after 6s: $(-not $gui.HasExited)"
+          if ($gui.HasExited) { throw "frozen launcher GUI exited early" }
+          Stop-Process -Id $gui.Id -Force
+          Write-Host "frozen launcher open smoke passed"
