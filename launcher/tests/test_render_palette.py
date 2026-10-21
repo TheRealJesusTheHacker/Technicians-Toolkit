@@ -116,6 +116,10 @@ def _render(root, height=820):
 def test_identity_stripes_are_the_locked_values():
     # The namesake primaries, exactly as the palette program locked
     # them. Beerus's violet is the owner's single namesake exception.
+    # Sphinx's guardian bronze-gold joined the locked set when its
+    # palette shipped canonical in Sphinx's Windows Phase 3 (v0.3.0):
+    # the hex is Sphinx's own BRONZE, read from its theme module
+    # (windows/src/sphinx_win/app/theme.py) — not an invention here.
     assert IDENTITY_STRIPES == {
         "Argus": "#25cc8a",
         "NitroCore": "#2ea3ff",
@@ -124,6 +128,7 @@ def test_identity_stripes_are_the_locked_values():
         "Lazarus": "#f0a13c",
         "Aegis": "#d29f3c",
         "Beerus": "#a478f7",
+        "Sphinx": "#cf9a3e",
     }
 
 

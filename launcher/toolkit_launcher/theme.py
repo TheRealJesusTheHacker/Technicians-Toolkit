@@ -41,6 +41,7 @@ IDENTITY_STRIPES = {
     "Lazarus": "#f0a13c",  # ember amber
     "Aegis": "#d29f3c",  # shield bronze
     "Beerus": "#a478f7",  # canonical violet — the owner's exception
+    "Sphinx": "#cf9a3e",  # guardian bronze-gold
 }
 
 

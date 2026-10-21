@@ -7,8 +7,10 @@ v0.1.0/v0.2.0 before their first releases. These tests pin that
 membership against the repo's real pin file and against the window
 the assembler-built manifest produces: seven bundled tools ready,
 the Beerus stick separate, and Sphinx's card present with no working
-Launch, its truthful note, and no identity stripe — Sphinx has no
-namesake palette yet, and none is improvised here.
+Launch, its truthful note, and its namesake identity stripe —
+guardian bronze-gold, canonical since Sphinx's Windows Phase 3
+(v0.3.0); while that palette did not exist the card wore the quiet
+panel edge, and no color was improvised for it in the meantime.
 """
 
 import json
@@ -128,7 +130,7 @@ def test_membership_states(qapp, tmp_path):
     assert sphinx.entry.version == ""  # no release, no version to show
 
 
-def test_sphinx_card_has_no_launch_and_no_stripe(qapp, tmp_path):
+def test_sphinx_card_has_no_launch_and_its_own_stripe(qapp, tmp_path):
     _membership_bundle(tmp_path)
     window = build_window(tmp_path)
     cards = {c["entry"].name: c for c in window.tool_cards}
@@ -139,14 +141,20 @@ def test_sphinx_card_has_no_launch_and_no_stripe(qapp, tmp_path):
     assert not sphinx["button"].isEnabled()
     assert sphinx["button"].text() == "Not in this bundle"
     assert sphinx["status"].text() == _sphinx_absent_entry()["note"]
-    # No identity stripe: Sphinx has no namesake palette yet, so its
-    # stripe is the quiet panel edge — no color is improvised for it,
-    # and it is certainly not Beerus's violet.
-    assert "Sphinx" not in IDENTITY_STRIPES
-    assert stripe_for("Sphinx") == PANEL_EDGE
-    assert PANEL_EDGE in sphinx["stripe"].styleSheet()
-    for color in IDENTITY_STRIPES.values():
-        assert color not in sphinx["stripe"].styleSheet()
+    # Its own identity stripe: Sphinx's namesake palette shipped
+    # canonical in its Windows Phase 3 (v0.3.0) — basalt black,
+    # sandstone, bronze-gold — and the stripe is that bronze,
+    # exactly the BRONZE of Sphinx's own theme module
+    # (windows/src/sphinx_win/app/theme.py at Sphinx HEAD
+    # c9ea4f0dfc1d). It is not the panel edge the card wore while
+    # the palette did not exist, and it is not Beerus's violet.
+    assert IDENTITY_STRIPES["Sphinx"] == "#cf9a3e"
+    assert stripe_for("Sphinx") == "#cf9a3e"
+    assert "#cf9a3e" in sphinx["stripe"].styleSheet()
+    assert PANEL_EDGE not in sphinx["stripe"].styleSheet()
+    for name, color in IDENTITY_STRIPES.items():
+        if name != "Sphinx":
+            assert color not in sphinx["stripe"].styleSheet()
     summary = window.findChild(QLabel, "SummaryLine")
     assert summary.text() == (
         "7 tools in this bundle  ·  1 still to come  ·  "
