@@ -398,26 +398,25 @@ def build_window(root: Path, launcher: Launcher | None = None):
         layout.addWidget(scroll, stretch=1)
 
     gap(12)
-    bottom_row = QHBoxLayout()
-    bottom_row.setSpacing(10)
     toggle = QPushButton("About this toolkit")
     toggle.setObjectName("AboutToggle")
     toggle.clicked.connect(lambda: build_about_dialog(window).exec())
-    bottom_row.addWidget(toggle)
+    layout.addWidget(toggle, alignment=Qt.AlignmentFlag.AlignLeft)
 
     check_button = QPushButton("Check bundle files")
     check_button.setObjectName("AboutToggle")
-    check_button.setAccessibleName("IntegrityCheck")
 
     def _on_check(_checked=False):
         # The check runs here, on the window's own thread, with the
         # button saying what is happening while it does: hashing a
         # bundle takes a moment, and a support tool's check should
-        # be as simple and deterministic as the check itself. (A
-        # worker-thread version of this wiring made the Windows
-        # test process exit 1 after a green test summary — proven
-        # by bisection in the 1.0.5 sweep, mechanism unpinned — so
-        # the seam stays thread-free by design.)
+        # be as simple and deterministic as the check itself. The
+        # two buttons stack like the window's other rows, on
+        # purpose: an earlier shape that nested them in their own
+        # row layout made the Windows test process exit 1 after a
+        # green test summary (fleet sweep 3, proven by bisection
+        # against a green control tree; the mechanism inside Qt
+        # was not pinned down, so the shape stays simple).
         from PySide6.QtWidgets import QApplication
 
         from .integrity import verify_bundle_files
@@ -433,9 +432,7 @@ def build_window(root: Path, launcher: Launcher | None = None):
         build_integrity_dialog(window, report).exec()
 
     check_button.clicked.connect(_on_check)
-    bottom_row.addWidget(check_button)
-    bottom_row.addStretch(1)
-    layout.addLayout(bottom_row)
+    layout.addWidget(check_button, alignment=Qt.AlignmentFlag.AlignLeft)
     window.integrity_button = check_button
     gap(10)
     footer = QLabel("Sentinel Safeguard LLC  ·  Kansas City, Missouri")
