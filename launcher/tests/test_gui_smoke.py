@@ -82,13 +82,24 @@ def test_check_mode_without_manifest_exits_2(tmp_path, capsys):
 # --- The in-window file check (M3, launcher 1.0.5) ---
 
 
+def _teardown(qapp, *widgets):
+    """Deterministic Qt teardown: a window or dialog dropped while
+    still registered can make the test process die at interpreter
+    shutdown even after a green summary (the fleet has hit this
+    exact flake before). Close, delete, and pump the event loop."""
+    for w in widgets:
+        w.close()
+        w.deleteLater()
+    qapp.processEvents()
+
+
 def test_window_carries_a_working_check_button(qapp, tmp_path):
     _mixed_bundle(tmp_path)
     window = build_window(tmp_path)
     assert window.integrity_button is not None
     assert window.integrity_button.isEnabled()
     assert window.integrity_button.text() == "Check bundle files"
-    window.close()
+    _teardown(qapp, window)
 
 
 def test_integrity_dialog_says_what_the_report_says(qapp, tmp_path):
@@ -100,7 +111,7 @@ def test_integrity_dialog_says_what_the_report_says(qapp, tmp_path):
     texts = [w.text() for w in dialog.findChildren(QLabel)]
     assert any("Every file checks out" in t for t in texts)
     assert any("1668" in t and "3 other files" in t for t in texts)
-    dialog.close()
+    _teardown(qapp, dialog)
 
     bad = IntegrityReport(
         checked=10, problems=["A file has changed: Tool.exe"], sums_found=True
@@ -109,4 +120,4 @@ def test_integrity_dialog_says_what_the_report_says(qapp, tmp_path):
     texts = [w.text() for w in dialog.findChildren(QLabel)]
     assert any("do not check out" in t for t in texts)
     assert any("Tool.exe" in t for t in texts)
-    dialog.close()
+    _teardown(qapp, dialog)
