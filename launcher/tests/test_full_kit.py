@@ -1,6 +1,8 @@
-"""The full kit: bundle 1.0.0 carries all seven medic-kit tools as
+"""The bundle 1.0.0 shape: all seven then-released medic-kit tools as
 files, plus Beerus's bootable stick as the one linked entry. Every
-member gets a launchable card; no "still to come" cards remain.
+bundled member gets a launchable card; no "still to come" cards in
+that manifest. The kit's eighth member, Sphinx — tracked, not yet
+bundled — is pinned by test_sphinx_membership.py.
 """
 
 import os
@@ -101,8 +103,13 @@ def test_full_kit_check_output(tmp_path, capsys):
     assert "not_in_bundle" not in out
 
 
-def test_about_text_claims_the_complete_kit():
-    assert "all seven tools" in ABOUT_TEXT
+def test_about_text_tells_the_membership_as_it_stands():
+    # Seven of the kit's eight tools are in the bundle as files; the
+    # eighth, Sphinx, is named as the member not in this bundle yet —
+    # the About box must never claim a completeness the cards deny.
+    assert "Seven of the kit's eight tools" in ABOUT_TEXT
+    assert "Sphinx" in ABOUT_TEXT
+    assert "not in this bundle yet" in ABOUT_TEXT
     assert "Lazarus" in ABOUT_TEXT and "Aegis" in ABOUT_TEXT
     # Both Beerus forms stay told apart (see test_two_forms.py).
     assert "Beerus Portable, the app" in ABOUT_TEXT
