@@ -102,6 +102,33 @@ def test_window_carries_a_working_check_button(qapp, tmp_path):
     _teardown(qapp, window)
 
 
+def test_check_button_runs_the_check_and_reports(qapp, tmp_path, monkeypatch):
+    """The click path, end to end: the button runs the real check
+    against the folder and hands the report to the dialog. The
+    dialog builder is stubbed so no modal box opens offscreen."""
+    import toolkit_launcher.app as app_module
+
+    seen = {}
+
+    class _FakeDialog:
+        def exec(self):
+            return 0
+
+    def fake_builder(parent, report):
+        seen["report"] = report
+        return _FakeDialog()
+
+    monkeypatch.setattr(app_module, "build_integrity_dialog", fake_builder)
+    _mixed_bundle(tmp_path)  # a bundle folder with no SHA256SUMS.txt
+    window = build_window(tmp_path)
+    window.integrity_button.click()
+    assert seen["report"].sums_found is False
+    assert any("SHA256SUMS.txt is missing" in p for p in seen["report"].problems)
+    assert window.integrity_button.isEnabled()
+    assert window.integrity_button.text() == "Check bundle files"
+    _teardown(qapp, window)
+
+
 def test_integrity_dialog_says_what_the_report_says(qapp, tmp_path):
     from toolkit_launcher.app import build_integrity_dialog
     from toolkit_launcher.integrity import IntegrityReport

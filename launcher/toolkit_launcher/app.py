@@ -409,28 +409,28 @@ def build_window(root: Path, launcher: Launcher | None = None):
     check_button.setObjectName("AboutToggle")
     check_button.setAccessibleName("IntegrityCheck")
 
-    def _on_check_finished(report):
-        check_button.setEnabled(True)
-        check_button.setText("Check bundle files")
-        build_integrity_dialog(window, report).exec()
-
     def _on_check(_checked=False):
-        from PySide6.QtCore import QThread, Signal
+        # The check runs here, on the window's own thread, with the
+        # button saying what is happening while it does: hashing a
+        # bundle takes a moment, and a support tool's check should
+        # be as simple and deterministic as the check itself. (A
+        # worker-thread version of this wiring made the Windows
+        # test process exit 1 after a green test summary — proven
+        # by bisection in the 1.0.5 sweep, mechanism unpinned — so
+        # the seam stays thread-free by design.)
+        from PySide6.QtWidgets import QApplication
 
-        class _IntegrityWorker(QThread):
-            done = Signal(object)
-
-            def run(self):
-                from .integrity import verify_bundle_files
-
-                self.done.emit(verify_bundle_files(root))
+        from .integrity import verify_bundle_files
 
         check_button.setEnabled(False)
         check_button.setText("Checking…")
-        worker = _IntegrityWorker(window)
-        worker.done.connect(_on_check_finished)
-        window._integrity_worker = worker  # kept alive until it reports
-        worker.start()
+        QApplication.processEvents()
+        try:
+            report = verify_bundle_files(root)
+        finally:
+            check_button.setEnabled(True)
+            check_button.setText("Check bundle files")
+        build_integrity_dialog(window, report).exec()
 
     check_button.clicked.connect(_on_check)
     bottom_row.addWidget(check_button)
