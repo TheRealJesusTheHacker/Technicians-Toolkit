@@ -4,7 +4,10 @@ All notable changes to the Technician's Toolkit — the bundle, its launcher, an
 
 ## [Unreleased]
 
-Nothing yet — the next bundle assembles when a member tool ships a new portable release.
+### Added
+
+- **Sphinx joins the kit as its eighth member (2026-10-21)** — Sentinel's free system-wide ad & tracker blocker ("Every request gets questioned"). It is tracked, not bundled: Sphinx has no published release yet — Android v0.4.0 feature-complete behind its release gate and the owner's real-device smoke pass; Windows Phases 1–2 complete with the Phase 1 audit closed (9 findings, all fixed), its portable existing as CI artifacts only; Debian planned — and the bundle assembles only from published releases. `bundle/tools.json` now accounts for Sphinx under `absent`, the same honest shape Lazarus and Aegis held before their first releases, and the tracker (`docs/PORTABLE-STATUS.md`) carries its per-edition record. Its license is undecided (the owner's per-repo call) and is recorded as such. Bundle v1.0.0 remains the published bundle; the next bundle release ingests Sphinx once Sphinx publishes its first release.
+- **Suite launcher 1.0.3** — the About box now tells the membership as it stands: seven of the kit's eight tools in the bundle as files, Sphinx named as the member not in this bundle yet. No behavior change — cards, states, and launching are unchanged — and Sphinx's card carries no identity stripe: its namesake palette is a separate design step, not improvised here.
 
 ## [1.0.0] — 2026-10-20
 
