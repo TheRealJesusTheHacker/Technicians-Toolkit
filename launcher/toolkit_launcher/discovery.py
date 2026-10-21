@@ -69,17 +69,28 @@ def discover(root: Path, manifest: BundleManifest) -> list[ToolState]:
                 )
                 continue
             missing_required = None
+            escaped_required = None
             if path.is_file():
                 for rel in entry.requires:
                     try:
                         needed = resolve_confined(root, rel)
                     except Exception:
-                        missing_required = rel
+                        escaped_required = rel
                         break
                     if not needed.exists():
                         missing_required = rel
                         break
-            if path.is_file() and missing_required is None:
+            if path.is_file() and escaped_required is not None:
+                states.append(
+                    ToolState(
+                        entry,
+                        "missing",
+                        f"Its start file is here, but '{escaped_required}' — "
+                        "part of the tool — points outside this bundle. "
+                        "Re-download the bundle to replace it.",
+                    )
+                )
+            elif path.is_file() and missing_required is None:
                 states.append(
                     ToolState(entry, "ready", "Ready.", entrypoint_path=path)
                 )

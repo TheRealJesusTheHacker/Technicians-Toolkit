@@ -12,6 +12,7 @@ It is a front door, never a replacement. Every tool in the bundle also runs on i
 - **Tools not in this bundle yet** — honest cards (no button) saying when they join. The kit's completeness is shown, never faked.
 - **Beerus, twice — once per form.** Beerus Portable, the app, is a bundled tool with a **Launch** button like any other. Live Boot, its bootable form, gets its own card ("Beerus — Live Boot") explaining it lives on its own bootable USB stick — a drive is wiped by booting from that stick, for machines that are off or being decommissioned whole. The two cards are told apart by name, and the About box tells both forms.
 - **The bundle's version**, the date it was put together, and an **About** box in plain language.
+- **Check bundle files** — a button that re-proves every file in the folder against the bundle's own `SHA256SUMS.txt`, on demand, and reports the result in plain language (roadmap M3, launcher 1.0.5). Files a working bundle gains on the job — a tool's data folder, certificates — are counted and reported, never condemned as damage.
 
 Every state is designed: if the manifest is missing or damaged the window says so plainly and what to do; if a tool's files are missing its card says so; if a start fails, the card explains it. There are no placeholder buttons and no dead ends.
 
@@ -45,10 +46,11 @@ In development, `python -m toolkit_launcher [--root <bundle folder>] [--check]` 
 | `toolkit_launcher/discovery.py` | Bundle-root location + per-tool states |
 | `toolkit_launcher/launching.py` | The launch seam: confinement, fixed args/env, runner |
 | `toolkit_launcher/app.py` | The window, the About box, `--check` |
+| `toolkit_launcher/integrity.py` | The on-demand bundle file check against `SHA256SUMS.txt` (pure Python, no Qt) |
 | `toolkit_launcher/theme.py` | The palette + stylesheet |
 | `tests/` | Manifest/discovery/launch/GUI-smoke/rendered-palette tests |
 
 ## Honest limits
 
 - The launcher starts tools; it does not elevate them. Tools that need administrator rights ask Windows themselves (NitroCore's exe requests it; Charon explains when the toll needs it) — the launcher never holds privileges of its own.
-- Discovery checks that a tool's start file is present. It does not re-verify bundle hashes at launch time (that is the manifest/checksum layer's job at assembly, and a growth item on the roadmap — M3).
+- Discovery checks that a tool's start file is present. It does not re-verify bundle hashes at launch time; hash verification is the manifest/checksum layer's job at assembly, plus the window's on-demand **Check bundle files** button (M3, landed in launcher 1.0.5) whenever the technician wants the folder re-proved where it stands.

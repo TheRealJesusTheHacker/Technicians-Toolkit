@@ -346,10 +346,20 @@ def verify(args) -> int:
 
     # 1. Every checksum line verifies; no unlisted files.
     listed = {}
-    for line in (root / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
-        digest, rel = line.split(None, 1)
-        listed[rel.strip()] = digest.strip()
     problems = []
+    for line in (root / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            problems.append(f"checksum line not written correctly: {line!r}")
+            continue
+        digest, rel = parts
+        rel = rel.strip()
+        if any(p == ".." for p in rel.replace("\\", "/").split("/")):
+            problems.append(f"checksum line points outside the bundle folder: {rel}")
+            continue
+        listed[rel] = digest.strip()
     for rel, digest in listed.items():
         target = root / rel
         if not target.is_file():

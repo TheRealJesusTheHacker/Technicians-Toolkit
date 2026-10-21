@@ -124,3 +124,83 @@ def test_requires_passed_into_manifest_fragment(tmp_path):
         root,
     )
     assert fragment["requires"] == ["_internal"]
+
+
+# --- Sweep-3 regression pins (2026-10-21) ---
+
+
+def _verify_args(tmp_path, zip_path):
+    class A:
+        pass
+
+    a = A()
+    a.config = str(Path(__file__).resolve().parents[1] / "tools.json")
+    a.work_dir = str(tmp_path / "work")
+    a.zip = str(zip_path)
+    return a
+
+
+def _bundle_zip(tmp_path, sums_text, files):
+    import hashlib  # noqa: F401  (kept local; builders below use it)
+
+    src = tmp_path / "src" / "TechniciansToolkit"
+    src.mkdir(parents=True)
+    for name, data in files.items():
+        (src / name).write_bytes(data)
+    (src / "SHA256SUMS.txt").write_text(sums_text, encoding="utf-8")
+    z = tmp_path / "bundle.zip"
+    with zipfile.ZipFile(z, "w") as zf:
+        for p in sorted(src.rglob("*")):
+            if p.is_file():
+                zf.write(p, p.relative_to(tmp_path / "src").as_posix())
+    return z
+
+
+def test_verify_tolerates_blank_lines_in_sums(tmp_path):
+    """A trailing blank line in SHA256SUMS.txt crashed verify with
+    an uncaught ValueError instead of a verdict. Blank lines are
+    skipped now and the bundle verifies."""
+    import hashlib
+    import json
+
+    manifest = {
+        "bundle": "TechniciansToolkit",
+        "bundle_version": "1.0.0",
+        "assembled": "2026-10-21",
+        "launcher": {"file": "TechniciansToolkit.exe", "version": "1.0.5"},
+        "tools": [
+            {
+                "name": "Tool",
+                "job": "Does its job.",
+                "repo": "TheRealJesusTheHacker/Tool",
+                "version": "1.0.0",
+                "entrypoint": "Tool.exe",
+                "args": [],
+            }
+        ],
+        "linked": [],
+        "absent": [],
+        "notes": [],
+    }
+    manifest_bytes = json.dumps(manifest).encode()
+    sums = (
+        f"{hashlib.sha256(b't').hexdigest()}  Tool.exe\n"
+        f"{hashlib.sha256(manifest_bytes).hexdigest()}  MANIFEST.json\n\n"
+    )
+    z = _bundle_zip(
+        tmp_path, sums, {"Tool.exe": b"t", "MANIFEST.json": manifest_bytes}
+    )
+    assert ab.verify(_verify_args(tmp_path, z)) == 0
+
+
+def test_verify_malformed_sums_line_is_a_fail_not_a_traceback(tmp_path):
+    z = _bundle_zip(tmp_path, "not-a-checksum-line\n", {"Tool.exe": b"t"})
+    assert ab.verify(_verify_args(tmp_path, z)) == 1
+
+
+def test_verify_sums_line_pointing_outside_is_a_fail(tmp_path):
+    import hashlib
+
+    digest = hashlib.sha256(b"t").hexdigest()
+    z = _bundle_zip(tmp_path, f"{digest}  ../outside.txt\n", {"Tool.exe": b"t"})
+    assert ab.verify(_verify_args(tmp_path, z)) == 1

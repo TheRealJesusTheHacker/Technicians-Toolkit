@@ -213,3 +213,71 @@ def test_tool_still_running_after_the_moment_counts_as_started(tmp_path):
     _, states = make_ready_bundle(tmp_path, [bundled_tool()])
     proc = Launcher(tmp_path, runner=runner, settle_seconds=0.05).launch(states[0])
     assert isinstance(proc, _AliveProcess)
+
+
+# --- Sweep-3 regression pins (2026-10-21) ---
+
+
+def test_prepare_folder_escape_is_a_launch_error_not_a_manifest_error(tmp_path, runner):
+    """A prepare_dirs entry that escapes through a planted symlink
+    was refused by resolve_confined with a ManifestError — which the
+    window's Launch handler does not catch (it catches LaunchError),
+    so the click died silently with no message on the card. The
+    refusal is a LaunchError now, in plain language, and nothing is
+    created outside the bundle and nothing is started."""
+    import os
+
+    root = tmp_path / "bundle"
+    outside = tmp_path / "outside-target"
+    outside.mkdir()
+    tool = bundled_tool(prepare_dirs=["Link/Sub"])
+    _, states = make_ready_bundle(root, [tool])
+    os.symlink(outside, root / "Link", target_is_directory=True)
+    with pytest.raises(LaunchError) as exc:
+        Launcher(root, runner=runner).launch(states[0])
+    assert "points outside the bundle folder" in str(exc.value)
+    assert runner.calls == []
+    assert not (outside / "Sub").exists()
+
+
+def test_env_absolute_path_outside_bundle_refused(tmp_path, runner):
+    """The roadmap's rule is that an env path pointing outside the
+    bundle is refused. Only {bundle} values were checked; a plain
+    absolute path passed straight through. It is refused now."""
+    tool = bundled_tool(env={"FAKE_DIR": "/etc/passwd"})
+    _, states = make_ready_bundle(tmp_path, [tool])
+    with pytest.raises(LaunchError):
+        Launcher(tmp_path, runner=runner).launch(states[0])
+    assert runner.calls == []
+
+
+def test_env_dotdot_escape_refused(tmp_path, runner):
+    tool = bundled_tool(env={"FAKE_DIR": "../../etc"})
+    _, states = make_ready_bundle(tmp_path, [tool])
+    with pytest.raises(LaunchError):
+        Launcher(tmp_path, runner=runner).launch(states[0])
+    assert runner.calls == []
+
+
+def test_env_plain_words_and_relative_paths_still_pass(tmp_path, runner):
+    tool = bundled_tool(env={"FAKE_MODE": "portable", "FAKE_SUB": "data/logs"})
+    _, states = make_ready_bundle(tmp_path, [tool])
+    Launcher(tmp_path, runner=runner).launch(states[0])
+    env = runner.calls[0]["env"]
+    assert env["FAKE_MODE"] == "portable"
+    assert env["FAKE_SUB"] == "data/logs"
+
+
+def test_elevator_returning_no_process_is_not_reported_started(tmp_path):
+    """ShellExecute can hand back no process handle; the launch used
+    to return that None as a success, so the card said "started"
+    about a start nobody could confirm. It is a plain refusal now."""
+    def refuse(argv, cwd, env):
+        raise _os_error(740)
+
+    _, states = make_ready_bundle(tmp_path, [bundled_tool()])
+    with pytest.raises(LaunchError) as exc:
+        Launcher(
+            tmp_path, runner=refuse, elevator=lambda a, c, e: None
+        ).launch(states[0])
+    assert "did not start it" in str(exc.value)

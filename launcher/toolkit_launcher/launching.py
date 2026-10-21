@@ -53,7 +53,7 @@ import time
 from pathlib import Path
 
 from .discovery import ToolState
-from .manifest import BUNDLE_PLACEHOLDER, resolve_confined
+from .manifest import BUNDLE_PLACEHOLDER, ManifestError, resolve_confined
 
 # Windows error codes whose plain meaning differs from "damaged
 # files" — each gets its own designed answer.
@@ -157,6 +157,30 @@ def _default_elevator(argv, cwd, env):
     return _ShellExecutedProcess(info.hProcess)
 
 
+def _path_escapes(root: Path, value: str) -> bool:
+    """True when an env value is a path that resolves outside root.
+
+    Only path-shaped values are judged: absolute paths (POSIX or
+    Windows form — a Windows absolute path can never name a place
+    inside this folder, whatever machine reads it) and values with
+    a ".." step. Anything else is a plain word, not a path.
+    """
+    import re
+
+    if re.match(r"^[A-Za-z]:[\\/]", value) or value.startswith("\\\\"):
+        return sys.platform != "win32" or not _confined(root, Path(value))
+    if os.path.isabs(value):
+        return not _confined(root, Path(value))
+    if any(part == ".." for part in re.split(r"[/\\]", value)):
+        return not _confined(root, root / value.replace("\\", "/"))
+    return False
+
+
+def _confined(root: Path, candidate: Path) -> bool:
+    resolved = candidate.resolve()
+    return resolved == root or root in resolved.parents
+
+
 class Launcher:
     def __init__(self, root: Path, runner=None, elevator=None, settle_seconds=0.5):
         self.root = Path(root).resolve()
@@ -181,6 +205,15 @@ class Launcher:
 
     def _substitute(self, value: str, tool_name: str) -> str:
         if BUNDLE_PLACEHOLDER not in value:
+            # A plain value that is itself a path gets the same
+            # confinement as a placeholder one: an absolute path, or
+            # a ".." step, that lands outside the bundle folder is
+            # refused (the roadmap's rule for env paths). Plain words
+            # and bundle-relative paths pass through unchanged.
+            if _path_escapes(self.root, value):
+                raise LaunchError(
+                    f"{tool_name} can't be started: a setting points outside the bundle folder."
+                )
             return value
         resolved = value.replace(BUNDLE_PLACEHOLDER, str(self.root))
         candidate = Path(resolved).resolve()
@@ -227,7 +260,13 @@ class Launcher:
         entry = state.entry
         argv, cwd, env = self.build_command(state)
         for rel in entry.prepare_dirs:
-            target = resolve_confined(self.root, rel)
+            try:
+                target = resolve_confined(self.root, rel)
+            except ManifestError:
+                raise LaunchError(
+                    f"{entry.name} can't be started: its data folder "
+                    f"('{rel}') points outside the bundle folder."
+                ) from None
             try:
                 target.mkdir(parents=True, exist_ok=True)
             except OSError:
@@ -245,6 +284,15 @@ class Launcher:
                 # grant it. Retry the way a double-click starts it.
                 try:
                     proc = self.elevator(argv, cwd, env)
+                    if proc is None:
+                        # The ask-the-user route came back with no
+                        # process at all: nothing was started, and
+                        # the card must not say otherwise.
+                        raise LaunchError(
+                            f"{entry.name} needs administrator permission to start, "
+                            "but Windows did not start it. Try Launch again and "
+                            "choose Yes when Windows asks."
+                        )
                 except OSError:
                     raise LaunchError(
                         f"{entry.name} needs administrator permission to start, "

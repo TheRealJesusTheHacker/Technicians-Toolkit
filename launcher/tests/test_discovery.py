@@ -89,3 +89,21 @@ def test_nested_required_folder_missing_names_it(tmp_path):
     # make_ready_bundle created only the entrypoint, not _internal.
     assert states[0].state == "missing"
     assert "Charon/_internal" in states[0].detail
+
+
+def test_requires_pointing_outside_is_not_called_missing(tmp_path):
+    """A requires entry escaping through a symlink was reported as
+    "missing — re-download", which was never the truth: the file is
+    there, it points outside the bundle. The card says so now."""
+    import os
+
+    root = tmp_path / "bundle"
+    outside = tmp_path / "outside-dir"
+    outside.mkdir()
+    write_bundle(root, tools=[bundled_tool(requires=["ReqDir"])])
+    (root / "FakeTool.exe").write_bytes(b"fake")
+    os.symlink(outside, root / "ReqDir", target_is_directory=True)
+    state = discover(root, load_manifest(root))[0]
+    assert state.state == "missing"
+    assert "points outside this bundle" in state.detail
+    assert "is missing" not in state.detail

@@ -9,7 +9,7 @@ import pytest  # noqa: E402
 
 pytest.importorskip("PySide6")
 
-from PySide6.QtWidgets import QApplication  # noqa: E402
+from PySide6.QtWidgets import QApplication, QLabel  # noqa: E402
 
 from conftest import bundled_tool, write_bundle  # noqa: E402
 from toolkit_launcher.app import build_window, run_check  # noqa: E402
@@ -77,3 +77,36 @@ def test_check_mode_reports_states(tmp_path, capsys):
 def test_check_mode_without_manifest_exits_2(tmp_path, capsys):
     assert run_check(tmp_path) == 2
     assert "BUNDLE PROBLEM" in capsys.readouterr().out
+
+
+# --- The in-window file check (M3, launcher 1.0.5) ---
+
+
+def test_window_carries_a_working_check_button(qapp, tmp_path):
+    _mixed_bundle(tmp_path)
+    window = build_window(tmp_path)
+    assert window.integrity_button is not None
+    assert window.integrity_button.isEnabled()
+    assert window.integrity_button.text() == "Check bundle files"
+    window.close()
+
+
+def test_integrity_dialog_says_what_the_report_says(qapp, tmp_path):
+    from toolkit_launcher.app import build_integrity_dialog
+    from toolkit_launcher.integrity import IntegrityReport
+
+    good = IntegrityReport(checked=1668, problems=[], sums_found=True, extra=3)
+    dialog = build_integrity_dialog(None, good)
+    texts = [w.text() for w in dialog.findChildren(QLabel)]
+    assert any("Every file checks out" in t for t in texts)
+    assert any("1668" in t and "3 other files" in t for t in texts)
+    dialog.close()
+
+    bad = IntegrityReport(
+        checked=10, problems=["A file has changed: Tool.exe"], sums_found=True
+    )
+    dialog = build_integrity_dialog(None, bad)
+    texts = [w.text() for w in dialog.findChildren(QLabel)]
+    assert any("do not check out" in t for t in texts)
+    assert any("Tool.exe" in t for t in texts)
+    dialog.close()

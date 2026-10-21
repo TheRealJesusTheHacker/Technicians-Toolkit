@@ -49,7 +49,8 @@ ABOUT_TEXT = (
     "or being decommissioned whole. Carry both sticks.\n\n"
     "Every file in this bundle was checked against its maker's published "
     "checksums before the bundle was put together; MANIFEST.json lists what "
-    "is inside and SHA256SUMS.txt lets you check the files again."
+    "is inside and SHA256SUMS.txt lets you check the files again — the "
+    "window's Check bundle files button runs that check for you."
 )
 
 
@@ -137,6 +138,57 @@ def build_about_dialog(parent=None):
     # height was measured at the width set above, so restore it —
     # every other row is one line tall at either width.
     dialog.resize(560, dialog.height())
+    return dialog
+
+
+def build_integrity_dialog(parent, report):
+    """The bundle file check's answer, in plain language."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout
+
+    from .theme import STYLESHEET
+
+    dialog = QDialog(parent)
+    dialog.setWindowTitle("Bundle file check")
+    dialog.setStyleSheet(STYLESHEET)
+    dialog.resize(560, 320)
+    layout = QVBoxLayout(dialog)
+    layout.setContentsMargins(22, 20, 22, 18)
+    layout.setSpacing(10)
+    if report.ok:
+        heading_text = "Every file checks out"
+        body = (
+            f"{report.checked} files were checked against SHA256SUMS.txt "
+            "and every one matches what the bundle shipped."
+        )
+        if report.extra:
+            body += (
+                f"\n\n{report.extra} other file{'s are' if report.extra != 1 else ' is'} "
+                "in this folder that the bundle did not ship — tool data "
+                "folders and job records live here too, and are expected."
+            )
+    else:
+        heading_text = "Some files do not check out"
+        shown = report.problems[:12]
+        body = "\n".join(f"• {p}" for p in shown)
+        if len(report.problems) > len(shown):
+            body += f"\n• …and {len(report.problems) - len(shown)} more."
+        if report.sums_found and report.checked:
+            body = (
+                f"{report.checked} files checked out. The problems found:\n\n"
+                + body
+            )
+    heading = QLabel(heading_text)
+    heading.setObjectName("ProblemTitle")
+    layout.addWidget(heading)
+    text = QLabel(body)
+    text.setObjectName("AboutText")
+    text.setWordWrap(True)
+    layout.addWidget(text, stretch=1)
+    close = QPushButton("Close")
+    close.setObjectName("AboutToggle")
+    close.clicked.connect(dialog.accept)
+    layout.addWidget(close, alignment=Qt.AlignmentFlag.AlignRight)
     return dialog
 
 
@@ -346,10 +398,45 @@ def build_window(root: Path, launcher: Launcher | None = None):
         layout.addWidget(scroll, stretch=1)
 
     gap(12)
+    bottom_row = QHBoxLayout()
+    bottom_row.setSpacing(10)
     toggle = QPushButton("About this toolkit")
     toggle.setObjectName("AboutToggle")
     toggle.clicked.connect(lambda: build_about_dialog(window).exec())
-    layout.addWidget(toggle, alignment=Qt.AlignmentFlag.AlignLeft)
+    bottom_row.addWidget(toggle)
+
+    check_button = QPushButton("Check bundle files")
+    check_button.setObjectName("AboutToggle")
+    check_button.setAccessibleName("IntegrityCheck")
+
+    def _on_check_finished(report):
+        check_button.setEnabled(True)
+        check_button.setText("Check bundle files")
+        build_integrity_dialog(window, report).exec()
+
+    def _on_check(_checked=False):
+        from PySide6.QtCore import QThread, Signal
+
+        class _IntegrityWorker(QThread):
+            done = Signal(object)
+
+            def run(self):
+                from .integrity import verify_bundle_files
+
+                self.done.emit(verify_bundle_files(root))
+
+        check_button.setEnabled(False)
+        check_button.setText("Checking…")
+        worker = _IntegrityWorker(window)
+        worker.done.connect(_on_check_finished)
+        window._integrity_worker = worker  # kept alive until it reports
+        worker.start()
+
+    check_button.clicked.connect(_on_check)
+    bottom_row.addWidget(check_button)
+    bottom_row.addStretch(1)
+    layout.addLayout(bottom_row)
+    window.integrity_button = check_button
     gap(10)
     footer = QLabel("Sentinel Safeguard LLC  ·  Kansas City, Missouri")
     footer.setObjectName("Footer")
