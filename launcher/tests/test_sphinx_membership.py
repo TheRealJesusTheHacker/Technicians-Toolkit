@@ -66,7 +66,7 @@ EXPECTED_PINS = [
     ("Lazarus", "1.0.3", "v1.0.3", "LazarusPortable.zip"),
     ("Aegis", "1.0.5", "v1.0.5", "AegisPortable.zip"),
     ("Beerus", "0.6.2", "v0.6.2", "BeerusPortable.zip"),
-    ("Sphinx", "1.0.0", "v1.0.0", "SphinxPortable.zip"),
+    ("Sphinx", "1.0.1", "v1.0.1", "SphinxPortable.zip"),
 ]
 
 
