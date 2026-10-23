@@ -33,7 +33,7 @@ This repository is the bundle's home — its documentation, its live portable-st
 
 | Tool | Job | Portable status | Get it |
 |---|---|---|---|
-| **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.8](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.8) |
+| **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.9](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.9) |
 | **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.6](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.6) |
 | **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.9](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.9) |
 | **Charon** | Update — driver updates, restore point first | ✅ **Ships today** | [CharonPortable.zip in v1.0.5](https://github.com/TheRealJesusTheHacker/Charon.exe/releases/tag/v1.0.5) |
