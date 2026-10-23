@@ -87,7 +87,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.md <<'EOF'
-**The Technician's Toolkit — the complete kit, all eight members current.** One zip that opens to one folder: all eight medic-kit tools in portable form, plus the suite launcher in the same folder. This is bundle 1.2 — the pin-freshness release: Argus and Sphinx move to their current releases, the suite launcher steps to 1.0.7, and the manifest's Aegis note is corrected.
+          **The Technician's Toolkit — the complete kit, all eight members current.** One zip that opens to one folder: all eight medic-kit tools in portable form, plus the suite launcher in the same folder. This is bundle 1.2 — the pin-freshness release: Argus and Sphinx move to their current releases, the suite launcher steps to 1.0.7, and the manifest's Aegis note is corrected.
 
           ## In this bundle
 
