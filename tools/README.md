@@ -42,11 +42,15 @@ TechniciansToolkit/
     Aegis.exe                Aegis
     _internal/               Aegis's support folder (part of the tool)
     README-PORTABLE.txt      Aegis's own readme, inside its folder as shipped
+
+  SphinxPortable/            Sphinx's own folder, exactly as its portable ships
+    Sphinx.exe               Sphinx
+    portable.txt             Sphinx's empty portable marker, as shipped
 ```
 
 Beerus appears in both its forms: the Portable app as files (the `Beerus` folder above), and the Live Boot image not at all — it is a separate stick, accounted for in the manifest as a link (see below).
 
-**The one rename, stated openly:** every portable edition carries a file named `README-PORTABLE.txt`, each with different contents. In the bundle each is kept as `README-PORTABLE-<Tool>.txt` — contents byte-identical to the tool's own readme; only the name is qualified, so nothing overwrites anything. The manifest records the final name per tool, and the bundle's manifest notes say the same. Nothing else is renamed, moved, or added.
+**The one rename, stated openly:** six of the eight portable editions carry a file named `README-PORTABLE.txt` at their top level, each with different contents. In the bundle each of those is kept as `README-PORTABLE-<Tool>.txt` — contents byte-identical to the tool's own readme; only the name is qualified, so nothing overwrites anything. The manifest records the final name per tool, and the bundle's manifest notes say the same. Aegis's readme sits inside its `Aegis/` folder and keeps its own name, and Sphinx's portable carries no readme at all, so neither is renamed. Nothing else is renamed, moved, or added.
 
 ## Running each tool
 
