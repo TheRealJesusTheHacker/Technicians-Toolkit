@@ -57,7 +57,7 @@ ENTRYPOINTS = [t["entrypoint"] for t in SEVEN]
 EXPECTED_PINS = [
     ("Argus", "1.2.7", "v1.2.7", "ArgusPortable.zip"),
     ("NitroCore", "1.1.6", "v1.1.6", "NitroCorePortable.zip"),
-    ("VectorZip", "1.2.8", "v1.2.8", "VectorZipPortable.zip"),
+    ("VectorZip", "1.2.9", "v1.2.9", "VectorZipPortable.zip"),
     ("Charon", "1.0.5", "v1.0.5", "CharonPortable.zip"),
     ("Lazarus", "1.0.3", "v1.0.3", "LazarusPortable.zip"),
     ("Aegis", "1.0.5", "v1.0.5", "AegisPortable.zip"),
