@@ -6,7 +6,7 @@
 
 ![License: Proprietary](https://img.shields.io/badge/License-Proprietary-2ee06f?style=flat-square)
 ![Tools](https://img.shields.io/badge/Tools-8-2ee06f?style=flat-square)
-[![Bundle](https://img.shields.io/badge/Bundle-v1.1.0-2ee06f?style=flat-square)](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.1.0)
+[![Bundle](https://img.shields.io/badge/Bundle-v1.2.0-2ee06f?style=flat-square)](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.2.0)
 ![Portable status](https://img.shields.io/badge/Portable%20status-Live%20tracker-2ee06f?style=flat-square)
 
 ---
@@ -93,7 +93,7 @@ Compare the output to the bundle's published checksum before you trust the stick
 
 ## Status
 
-**The current bundle is [v1.1.0](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.1.0) (2026-10-23)** — one zip (409,669,306 B, SHA-256 `5c9fd065d429e2083b880d120937e2e4e0b65efcaa76e0cebc3dbae9604b1ab4`) that opens to one folder carrying all eight members' portables as files (Argus v1.2.7, NitroCore v1.1.6, VectorZip v1.2.9, Charon v1.0.5, Lazarus v1.0.3, Aegis v1.0.5, Beerus Portable v0.6.2, Sphinx v1.0.0) plus the suite launcher v1.0.6, with a full manifest and checksums covering 1,670 files. Bundle v1.0.0 (2026-10-20) carried the seven then-released portables plus launcher v1.0.2 (359,216,273 B, 1,668 files). The first bundle, v0.1.0, shipped the same day with the four then-released portables and launcher v0.1.0; v0.2.0 followed it with five. **The kit has eight members since 2026-10-21:** Sphinx joined as a tracked member, published its first release on 2026-10-23, and entered the bundle the same day (v1.1.0) — the first bundle with the whole kit in the folder, its manifest's absent list empty. Beerus's other form, the bootable Live Boot image, is portable by design and stays linked, never bundled as files. The roadmap in [docs/ROADMAP.md](docs/ROADMAP.md) defines how bundle versions track the manifest of tool versions they carry.
+**The current bundle is [v1.2.0](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.2.0) (2026-10-23)** — one zip (409,664,299 B, SHA-256 `a6068a4a11896481c37391e21c824915e920595bf42c09bbe13be68c8c2cfc91`) that opens to one folder carrying all eight members' portables as files (Argus v1.2.9, NitroCore v1.1.6, VectorZip v1.2.9, Charon v1.0.5, Lazarus v1.0.3, Aegis v1.0.5, Beerus Portable v0.6.2, Sphinx v1.0.1) plus the suite launcher v1.0.7, with a full manifest and checksums covering 1,670 files. Bundle v1.1.0 (2026-10-23) carried Argus v1.2.7 and Sphinx v1.0.0 with launcher v1.0.6 (409,669,306 B, 1,670 files). Bundle v1.0.0 (2026-10-20) carried the seven then-released portables plus launcher v1.0.2 (359,216,273 B, 1,668 files). The first bundle, v0.1.0, shipped the same day with the four then-released portables and launcher v0.1.0; v0.2.0 followed it with five. **The kit has eight members since 2026-10-21:** Sphinx joined as a tracked member, published its first release on 2026-10-23, and entered the bundle the same day (v1.1.0) — the first bundle with the whole kit in the folder, its manifest's absent list empty. Beerus's other form, the bootable Live Boot image, is portable by design and stays linked, never bundled as files. The roadmap in [docs/ROADMAP.md](docs/ROADMAP.md) defines how bundle versions track the manifest of tool versions they carry.
 
 ## License
 
