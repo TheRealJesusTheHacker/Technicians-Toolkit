@@ -55,7 +55,7 @@ STICK_ENTRY = {
 }
 ENTRYPOINTS = [t["entrypoint"] for t in EIGHT]
 
-# The eight bundled pins, exactly as bundle 1.1.0 ships them. Any
+# The eight bundled pins, exactly as the current bundle ships them. Any
 # change here is a member sync of its own, never a side effect of
 # membership bookkeeping.
 EXPECTED_PINS = [
@@ -90,12 +90,12 @@ def _membership_bundle(root):
 def test_tools_json_bundles_sphinx_with_the_eight():
     config = _tools_json()
     # The eight bundled members' pins, Sphinx's among them, and the
-    # bundle they ship as: 1.1.0, the first bundle with the whole kit.
+    # bundle they ship as: 1.2.0 (1.1.0 was the first with the whole kit).
     assert [
         (t["name"], t["version"], t["tag"], t["artifact"]) for t in config["tools"]
     ] == EXPECTED_PINS
-    assert config["bundle_version"] == "1.1.0"
-    assert config["zip_name"] == "TechniciansToolkit-v1.1.0.zip"
+    assert config["bundle_version"] == "1.2.0"
+    assert config["zip_name"] == "TechniciansToolkit-v1.2.0.zip"
     assert [e["name"] for e in config["linked"]] == ["Beerus — Live Boot"]
     # Nobody is absent any more: every member of the kit is in the
     # bundle as files, so the honest shape is an empty absent list.

@@ -60,13 +60,13 @@ jobs:
       - name: Verify the assembled bundle
         run: >
           python bundle/assemble_bundle.py verify
-          --zip dist/TechniciansToolkit-v1.1.0.zip
+          --zip dist/TechniciansToolkit-v1.2.0.zip
           --work-dir assembly
 
       - name: Shipped launcher against the shipped bundle
         shell: pwsh
         run: |
-          Expand-Archive dist/TechniciansToolkit-v1.1.0.zip -DestinationPath smoke -Force
+          Expand-Archive dist/TechniciansToolkit-v1.2.0.zip -DestinationPath smoke -Force
           $proc = Start-Process -FilePath "smoke/TechniciansToolkit/TechniciansToolkit.exe" -ArgumentList "--check" -Wait -PassThru -NoNewWindow
           if ($proc.ExitCode -ne 0) { throw "The shipped launcher's --check failed with exit code $($proc.ExitCode)" }
           Write-Host "Shipped launcher --check passed against the shipped bundle."
@@ -77,7 +77,7 @@ jobs:
         with:
           name: TechniciansToolkit-bundle
           path: |
-            dist/TechniciansToolkit-v1.1.0.zip
+            dist/TechniciansToolkit-v1.2.0.zip
             dist/SHA256SUMS.txt
 
       - name: Publish the bundle release
@@ -87,28 +87,28 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cat > release-notes.md <<'EOF'
-          **The Technician's Toolkit — the complete kit, now at eight.** One zip that opens to one folder: all eight medic-kit tools in portable form, plus the suite launcher in the same folder. This is bundle 1.1 — the first bundle that carries Sphinx, the kit's eighth member, as files.
+**The Technician's Toolkit — the complete kit, all eight members current.** One zip that opens to one folder: all eight medic-kit tools in portable form, plus the suite launcher in the same folder. This is bundle 1.2 — the pin-freshness release: Argus and Sphinx move to their current releases, the suite launcher steps to 1.0.7, and the manifest's Aegis note is corrected.
 
           ## In this bundle
 
           | Tool | Version | Form |
           |---|---|---|
-          | Argus | 1.2.7 | Portable — `Argus.exe` (+ its portable-mode starter) |
+          | Argus | 1.2.9 | Portable — `Argus.exe` (+ its portable-mode starter) |
           | NitroCore | 1.1.6 | Portable — `NitroCoreOptimizer.exe` + its `_internal/` |
           | VectorZip | 1.2.9 | Portable — `VectorZip.exe` |
           | Charon | 1.0.5 | Portable — in its own `Charon/` folder, as it ships |
           | Lazarus | 1.0.3 | Portable — `Lazarus.exe` |
           | Aegis | 1.0.5 | Portable — in its own `Aegis/` folder, as it ships |
           | Beerus | 0.6.2 | Portable app — in a `Beerus/` folder (see the second note below) |
-          | Sphinx | 1.0.0 | Portable — in its own `SphinxPortable/` folder, as it ships |
-          | **Suite launcher** | **1.0.6** | `TechniciansToolkit.exe` — one window over the whole kit |
+          | Sphinx | 1.0.1 | Portable — in its own `SphinxPortable/` folder, as it ships |
+          | **Suite launcher** | **1.0.7** | `TechniciansToolkit.exe` — one window over the whole kit |
           | Beerus — Live Boot | — | Never a folder: the bootable stick is its own USB stick |
 
-          New in this bundle — **Sphinx joins the kit as files.** Sentinel's free system-wide ad & tracker blocker ("Every request gets questioned") published its first release, and per the standing sync rule it is in the bundle in the same change-set: its launcher card now carries a working Launch, in its own guardian bronze-gold stripe. With Sphinx in, the manifest's absent list is empty — every member of the kit is in this folder. The member pins also carry the patches the fleet shipped since bundle 1.0 (Argus 1.2.7, VectorZip 1.2.9, Charon 1.0.5, Lazarus 1.0.3, Aegis 1.0.5), and the suite launcher is at 1.0.6 — the About box tells the eight-of-eight membership as it stands, on top of everything since 1.0.2, the in-window Check bundle files button (1.0.5) among it.
+          New in this bundle — **Argus 1.2.9 and Sphinx 1.0.1.** Argus moves from 1.2.7 to 1.2.9: 1.2.8 taught it to scan inside archives — ZIP and TAR members go through the same engine as loose files under shared hard budgets (512 members / 256 MB extracted / depth 3 / 30 s per member), and anything it could not check marks the archive not fully scanned on every surface, never clean — and 1.2.9 hardens its report surfaces so a crafted file name can no longer forge lines in its output, watch stream, quarantine lists, history, or reports. Sphinx moves from 1.0.0 to 1.0.1, its fix release: the Windows restore-discipline wave (turning protection off is recorded correctly; quitting the tray can no longer leave DNS pointing at a dead loopback), installer branding, and the Debian edition's liveness-proof and atomic-write parity fixes. The other six members are unchanged from bundle 1.1.0, and the suite launcher steps to 1.0.7 on the version change alone — cards, stripes, states, and launching are as they were. The manifest's Aegis note is also corrected in this bundle: the manifest inside bundle 1.1.0 understated Aegis's footprint, naming only its settings file; the note now also names the vault-state file Aegis has kept since its v1.0.5 (the correction stood in the source from Fleet Sweep #4 — 1.2.0 is the first shipped bundle whose manifest carries it). No Argus witness run is claimed for bundle 1.2.0.
 
           Beerus is in this bundle twice, once per form: the app above, and its other form — the bootable Live Boot — accounted for in the manifest as a link, never as files. Beerus Portable keeps its certificates of destruction in `Beerus/certificates` and its file, folder, and free-space wipe reports in `Beerus/certificates/reports` — your job records, inside the folder.
 
-          Aegis keeps almost nothing anywhere else: no registry entries, no temporary copies — only a small settings file holding the two timing choices (the quiet-time lock and how long a copied password stays) and nothing else — its vaults are single sealed files (`.aegis`) that you name and place yourself. Lazarus keeps its backup stores in a folder you name, refuses system folders for them, and always writes rescued files to a different drive than the one being rescued.
+          Aegis keeps almost nothing anywhere else: no registry entries, no temporary copies — a small settings file holding the two timing choices (the quiet-time lock and how long a copied password stays), and — since v1.0.5 — a small vault-state file holding check values only: the newest state of each vault Aegis has seen on that computer, remembered outside the vault file as its rollback tripwire (no vault content, no file names). Its vaults are single sealed files (`.aegis`) that you name and place yourself. Lazarus keeps its backup stores in a folder you name, refuses system folders for them, and always writes rescued files to a different drive than the one being rescued.
 
           Every tool also runs standalone from the bundle folder — the launcher is a front door, not a lock. Every file inside was verified against its maker's published checksums before assembly; the bundle's own `MANIFEST.json` + `SHA256SUMS.txt` (inside the folder) and the `SHA256SUMS.txt` attached to this release (covering the zip) let you verify it again.
 
@@ -120,6 +120,6 @@ jobs:
           *Built by Sentinel Safeguard LLC — Security For Everyone.*
           EOF
           gh release create "${{ github.ref_name }}" \
-            dist/TechniciansToolkit-v1.1.0.zip dist/SHA256SUMS.txt \
+            dist/TechniciansToolkit-v1.2.0.zip dist/SHA256SUMS.txt \
             --title "Technician's Toolkit ${{ github.ref_name }}" \
             --notes-file release-notes.md
