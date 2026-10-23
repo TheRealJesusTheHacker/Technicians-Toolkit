@@ -126,6 +126,78 @@ def test_requires_passed_into_manifest_fragment(tmp_path):
     assert fragment["requires"] == ["_internal"]
 
 
+# --- Sweep-4 regression pins (2026-10-23) ---
+
+
+def test_fetch_verified_never_trusts_a_cached_sums_file(tmp_path, monkeypatch):
+    """Regression pin (fleet sweep #4, supply chain): the download
+    folder kept a sums file per tool NAME, so a warm folder from
+    an earlier assembly carried the earlier release's sums — and
+    a stale artifact matching them passed verification under the
+    new pin's label without any download at all. The sums must be
+    fetched fresh from the pinned release every time, and only an
+    artifact matching THOSE sums may pass."""
+    import hashlib
+
+    dl = tmp_path / "dl"
+    dl.mkdir()
+    stale = b"stale artifact from the previous pin"
+    fresh = b"the pinned release's real artifact"
+    (dl / "ArgusPortable.zip").write_bytes(stale)
+    (dl / "Argus-SHA256SUMS.txt").write_text(
+        f"{hashlib.sha256(stale).hexdigest()}  ArgusPortable.zip\n",
+        encoding="utf-8",
+    )
+    served = []
+
+    def fake_download(url, dest):
+        served.append(url)
+        if url.endswith("SHA256SUMS.txt"):
+            dest.write_text(
+                f"{hashlib.sha256(fresh).hexdigest()}  ArgusPortable.zip\n",
+                encoding="utf-8",
+            )
+        else:
+            dest.write_bytes(fresh)
+
+    monkeypatch.setattr(ab, "download", fake_download)
+    pinned = tool(
+        "Argus", "Argus.exe", sums="SHA256SUMS.txt", tag="v1.2.8"
+    )
+    artifact, digest = ab.fetch_verified(pinned, dl)
+    assert digest == hashlib.sha256(fresh).hexdigest()
+    assert artifact.read_bytes() == fresh
+    assert any("/v1.2.8/" in url for url in served)
+
+
+def test_fetch_verified_stops_when_fresh_sums_cannot_be_matched(
+    tmp_path, monkeypatch
+):
+    """With fresh sums in hand, an artifact that matches neither
+    the cache nor a fresh download stops assembly — fail closed."""
+    import hashlib
+
+    dl = tmp_path / "dl"
+    dl.mkdir()
+    (dl / "ArgusPortable.zip").write_bytes(b"not the artifact")
+
+    def fake_download(url, dest):
+        if url.endswith("SHA256SUMS.txt"):
+            dest.write_text(
+                f"{hashlib.sha256(b'real').hexdigest()}  ArgusPortable.zip\n",
+                encoding="utf-8",
+            )
+        else:
+            dest.write_bytes(b"still not the artifact")
+
+    monkeypatch.setattr(ab, "download", fake_download)
+    pinned = tool(
+        "Argus", "Argus.exe", sums="SHA256SUMS.txt", tag="v1.2.8"
+    )
+    with pytest.raises(ab.AssemblyError):
+        ab.fetch_verified(pinned, dl)
+
+
 # --- Sweep-3 regression pins (2026-10-21) ---
 
 

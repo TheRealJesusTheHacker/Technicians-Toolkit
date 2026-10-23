@@ -79,11 +79,20 @@ def release_url(tool: dict, filename: str) -> str:
 
 
 def fetch_verified(tool: dict, download_dir: Path) -> tuple[Path, str]:
-    """Download a tool's artifact and prove it against its own sums."""
+    """Download a tool's artifact and prove it against its own sums.
+
+    The sums file is downloaded fresh from the pinned release on
+    every run — never reused from the download folder. A sums file
+    left over from an earlier pin names that earlier release's
+    artifact; trusting it would let a stale artifact (and a stale
+    sums file travelling with it) pass verification under the new
+    pin's version label. The artifact itself may be reused, but
+    only because it must match the fresh sums — a mismatch brings
+    a fresh download, and a second mismatch stops assembly.
+    """
     artifact = download_dir / tool["artifact"]
     sums = download_dir / f"{tool['name']}-{tool['sums']}"
-    if not sums.is_file():
-        download(release_url(tool, tool["sums"]), sums)
+    download(release_url(tool, tool["sums"]), sums)
     expected = None
     for line in sums.read_text(encoding="utf-8").splitlines():
         parts = line.strip().split(None, 1)

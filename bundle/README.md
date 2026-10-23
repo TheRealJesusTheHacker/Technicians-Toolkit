@@ -12,7 +12,7 @@ python assemble_bundle.py verify   --zip dist/TechniciansToolkit-vX.Y.Z.zip
 `assemble`:
 
 1. **Pull** — downloads each tool's portable artifact from its own GitHub release, exactly as pinned in `tools.json` (repo, tag, artifact name, checksums file).
-2. **Verify** — every artifact's SHA-256 must match the entry in the checksums file published with that tool's own release. A mismatch stops the build; there is no override.
+2. **Verify** — every artifact's SHA-256 must match the entry in the checksums file published with that tool's own release. The checksums file is downloaded fresh from the pinned release on every assembly — a copy left in the download folder by an earlier assembly is never trusted, so a stale artifact cannot pass under a new pin's label. A mismatch stops the build; there is no override.
 3. **Lay out** — extracts each portable into the ONE bundle folder, flat: every tool's files together at one level. The bundle adds no folders of its own; a tool keeps only the structure its own portable ships with (Charon's `Charon/` folder, NitroCore's `_internal/`). The one exception is a tool pinned with a `folder` in `tools.json` — Beerus, whose answer to the `_internal` collision below is a folder of its own.
 4. **Manifest + checksums** — writes `MANIFEST.json` (every tool accounted for: bundled, linked, or honestly absent) and a `SHA256SUMS.txt` covering every file in the folder.
 5. **Ship** — zips the single folder and writes the release-level `SHA256SUMS.txt` next to the zip.
