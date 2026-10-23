@@ -4,6 +4,10 @@ All notable changes to the Technician's Toolkit — the bundle, its launcher, an
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-10-23
+
+**Bundle 1.1.0 — the complete kit.** The first bundle with all eight members in the folder as files: Argus 1.2.7, NitroCore 1.1.6, VectorZip 1.2.9, Charon 1.0.5, Lazarus 1.0.3, Aegis 1.0.5, Beerus Portable 0.6.2, and Sphinx 1.0.0 — the eighth member, ingested the day its first release shipped — plus the Beerus — Live Boot stick accounted for as the separate bootable medium it is, and the manifest's `absent` list empty for the first time. Release `421813109`: `TechniciansToolkit-v1.1.0.zip` (409,669,306 B, SHA-256 `5c9fd065d429e2083b880d120937e2e4e0b65efcaa76e0cebc3dbae9604b1ab4`), `SHA256SUMS.txt` (97 B), one zip opening to one folder, 1,670 files inside, every internal checksum verified after publishing by a fresh download and re-extraction (8 tools ready, the stick separate); CI run `39952749003` green end to end, including the shipped launcher's `--check` against the shipped bundle. The suite ships as launcher 1.0.6; the launcher 1.0.3–1.0.5 work and the member pin syncs recorded below shipped in this bundle.
+
 ### Added
 
 - **Sphinx joins the kit as its eighth member (2026-10-21)** — Sentinel's free system-wide ad & tracker blocker ("Every request gets questioned"). It is tracked, not bundled: Sphinx has no published release yet — Android v0.4.0 feature-complete behind its release gate and the owner's real-device smoke pass; Windows Phases 1–2 complete with the Phase 1 audit closed (9 findings, all fixed), its portable existing as CI artifacts only; Debian planned — and the bundle assembles only from published releases. `bundle/tools.json` now accounts for Sphinx under `absent`, the same honest shape Lazarus and Aegis held before their first releases, and the tracker (`docs/PORTABLE-STATUS.md`) carries its per-edition record. Its license is undecided (the owner's per-repo call) and is recorded as such. Bundle v1.0.0 remains the published bundle; the next bundle release ingests Sphinx once Sphinx publishes its first release.

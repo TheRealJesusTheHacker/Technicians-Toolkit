@@ -17,6 +17,8 @@ One download, one USB, the whole kit. A bundle release is **assembled** — pull
 - **M4 — Full kit (bundle v1.0) — DONE (2026-10-20).** Every tool has a portable form in the bundle: Lazarus and Aegis joined as files with their portable editions, and Beerus is represented by its app as files plus the Live Boot stick as a link. Bundle v1.0.0 shipped on that set (see docs/PORTABLE-STATUS.md).
 - **M5 — The kit grows to eight (2026-10-21).** Sphinx — Sentinel's free system-wide ad & tracker blocker — joins the kit as its eighth member, **tracked, not yet bundled**: it has no published release (Android v0.4.1 feature-complete behind its release gate and the owner's device smoke pass; Windows Phases 1–3 complete with the Phase 3 audit closed, its portable existing as CI artifacts only; Debian Phases 1–2 landed and audited), and the bundle assembles only from published releases. The manifest accounts for it under `absent`, the launcher shows its card as not in this bundle, and the tracker carries its per-edition record. The next bundle release ingests Sphinx once Sphinx publishes its first release; how the Android edition is represented in a Windows bundle is the owner's call for that day.
 
+- **M6 — The kit is complete at eight (2026-10-23).** Sphinx published its first release (**v1.0.0**) and was ingested the same day: **bundle v1.1.0** carries all eight members as files — the manifest's `absent` list is empty for the first time, and only Beerus's Live Boot remains a link, as it must. From here the bundle's work is the standing sync rule: every member release moves its pin in the same change-set.
+
 ## Bundle versioning
 
 - The bundle has its own version (`v0.1.0`, `v0.2.0`, …) that increments on every assembled release.
