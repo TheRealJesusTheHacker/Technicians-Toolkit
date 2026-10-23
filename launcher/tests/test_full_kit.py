@@ -1,8 +1,9 @@
-"""The bundle 1.0.0 shape: all seven then-released medic-kit tools as
-files, plus Beerus's bootable stick as the one linked entry. Every
-bundled member gets a launchable card; no "still to come" cards in
-that manifest. The kit's eighth member, Sphinx — tracked, not yet
-bundled — is pinned by test_sphinx_membership.py.
+"""A full-kit manifest shape: every bundled medic-kit tool as files,
+plus Beerus's bootable stick as the one linked entry. Every bundled
+member gets a launchable card; no "still to come" cards in that
+manifest. The real bundle's membership — all eight kit members,
+Sphinx included since bundle 1.1.0 — is pinned against the repo's
+own pin file by test_sphinx_membership.py.
 """
 
 import os
@@ -104,12 +105,12 @@ def test_full_kit_check_output(tmp_path, capsys):
 
 
 def test_about_text_tells_the_membership_as_it_stands():
-    # Seven of the kit's eight tools are in the bundle as files; the
-    # eighth, Sphinx, is named as the member not in this bundle yet —
-    # the About box must never claim a completeness the cards deny.
-    assert "Seven of the kit's eight tools" in ABOUT_TEXT
+    # All eight of the kit's tools are in the bundle as files, Sphinx
+    # named among them — the About box must never claim a completeness
+    # the cards deny, nor keep reporting an absence that has ended.
+    assert "All eight of the kit's tools" in ABOUT_TEXT
     assert "Sphinx" in ABOUT_TEXT
-    assert "not in this bundle yet" in ABOUT_TEXT
+    assert "not in this bundle yet" not in ABOUT_TEXT
     assert "Lazarus" in ABOUT_TEXT and "Aegis" in ABOUT_TEXT
     # Both Beerus forms stay told apart (see test_two_forms.py).
     assert "Beerus Portable, the app" in ABOUT_TEXT
