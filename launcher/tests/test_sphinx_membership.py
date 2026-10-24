@@ -59,13 +59,13 @@ ENTRYPOINTS = [t["entrypoint"] for t in EIGHT]
 # change here is a member sync of its own, never a side effect of
 # membership bookkeeping.
 EXPECTED_PINS = [
-    ("Argus", "1.2.9", "v1.2.9", "ArgusPortable.zip"),
+    ("Argus", "1.2.12", "v1.2.12", "ArgusPortable.zip"),
     ("NitroCore", "1.1.6", "v1.1.6", "NitroCorePortable.zip"),
     ("VectorZip", "1.2.10", "v1.2.10", "VectorZipPortable.zip"),
     ("Charon", "1.0.5", "v1.0.5", "CharonPortable.zip"),
-    ("Lazarus", "1.0.3", "v1.0.3", "LazarusPortable.zip"),
+    ("Lazarus", "1.0.4", "v1.0.4", "LazarusPortable.zip"),
     ("Aegis", "1.0.5", "v1.0.5", "AegisPortable.zip"),
-    ("Beerus", "0.6.2", "v0.6.2", "BeerusPortable.zip"),
+    ("Beerus", "0.6.3", "v0.6.3", "BeerusPortable.zip"),
     ("Sphinx", "1.0.1", "v1.0.1", "SphinxPortable.zip"),
 ]
 
