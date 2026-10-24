@@ -276,3 +276,59 @@ def test_verify_sums_line_pointing_outside_is_a_fail(tmp_path):
     digest = hashlib.sha256(b"t").hexdigest()
     z = _bundle_zip(tmp_path, f"{digest}  ../outside.txt\n", {"Tool.exe": b"t"})
     assert ab.verify(_verify_args(tmp_path, z)) == 1
+
+
+# --- Sweep-5 regression pins (2026-10-24) ---
+
+
+def test_verify_missing_sums_file_is_a_fail_not_a_traceback(tmp_path):
+    """A bundle zip whose folder carries no SHA256SUMS.txt crashed
+    verify with an uncaught FileNotFoundError. A damaged bundle is
+    exactly the input this proof exists for, so — like a missing
+    manifest or a malformed sums line — it gets a FAIL verdict."""
+    z = tmp_path / "nosums.zip"
+    with zipfile.ZipFile(z, "w") as zf:
+        zf.writestr("TechniciansToolkit/Tool.exe", b"t")
+    assert ab.verify(_verify_args(tmp_path, z)) == 1
+
+
+def test_verify_non_zip_is_a_fail_not_a_traceback(tmp_path):
+    """A truncated or corrupt download is not a zip at all; opening it
+    raised BadZipFile out of verify instead of returning a verdict."""
+    z = tmp_path / "corrupt.zip"
+    z.write_bytes(b"this is not a zip file, just a truncated download")
+    assert ab.verify(_verify_args(tmp_path, z)) == 1
+
+
+def test_extract_file_then_child_path_aborts_with_assembly_error(tmp_path):
+    """One portable lays a file named Data; another needs Data/ as a
+    folder. Laying out the second used to die with a raw
+    FileExistsError from mkdir instead of the assembler's plain
+    collision stop — assembly still stopped, but as a traceback."""
+    first = make_zip(
+        tmp_path / "a.zip", {"Tool.exe": b"a", "Data": b"a file, not a folder"}
+    )
+    second = make_zip(
+        tmp_path / "b.zip", {"Other.exe": b"b", "Data/x.dll": b"x"}
+    )
+    root = tmp_path / "bundle"
+    root.mkdir()
+    ab.extract_tool(tool("A", "Tool.exe"), first, root)
+    with pytest.raises(ab.AssemblyError):
+        ab.extract_tool(tool("B", "Other.exe"), second, root)
+
+
+def test_extract_child_then_file_within_one_zip_aborts(tmp_path):
+    """The same collision inside a single portable: Data/x.dll first,
+    then a file named Data. The second member's target already exists
+    as a folder, which the collision guard already refused — this
+    pins that both orders end in AssemblyError, never a traceback
+    and never an overwrite."""
+    z = make_zip(
+        tmp_path / "a.zip",
+        {"Tool.exe": b"t", "Data/x.dll": b"x", "Data": b"a file"},
+    )
+    root = tmp_path / "bundle"
+    root.mkdir()
+    with pytest.raises(ab.AssemblyError):
+        ab.extract_tool(tool("A", "Tool.exe"), z, root)

@@ -67,7 +67,9 @@ def sha256_file(path: Path) -> str:
 
 def download(url: str, dest: Path) -> None:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request) as response, open(dest, "wb") as out:
+    # A per-operation timeout: a stalled connection must fail the
+    # assembly with an error, never hang it forever mid-download.
+    with urllib.request.urlopen(request, timeout=120) as response, open(dest, "wb") as out:
         shutil.copyfileobj(response, out, 1 << 20)
 
 
@@ -183,7 +185,20 @@ def extract_tool(tool: dict, artifact: Path, bundle_root: Path) -> dict:
                     "purpose, never by overwrite."
                 )
             seen[member.lower()] = member
-            target.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                target.parent.mkdir(parents=True, exist_ok=True)
+            except OSError as exc:
+                # A member that needs a folder where an earlier member
+                # already laid a file (or the mirror image) cannot be
+                # laid out without overwriting something. That is a
+                # collision like any other: a plain AssemblyError stop,
+                # never a raw traceback out of the extractor.
+                raise AssemblyError(
+                    f"Collision while laying out {tool['name']}: '{member}' "
+                    f"needs a folder where a file already sits in the "
+                    f"bundle folder ({exc}). Assembly stopped — collisions "
+                    "are resolved on purpose, never by overwrite."
+                ) from exc
             with zf.open(info) as src, open(target, "wb") as dst:
                 shutil.copyfileobj(src, dst, 1 << 20)
     entrypoint = bundle_root / tool["entrypoint"]
@@ -344,19 +359,30 @@ def verify(args) -> int:
     if scratch.exists():
         shutil.rmtree(scratch)
     scratch.mkdir(parents=True)
-    with zipfile.ZipFile(zip_path) as zf:
-        tops = {n.split("/")[0] for n in zf.namelist() if n.strip()}
-        if tops != {config["folder"]}:
-            print(f"FAIL: bundle must contain exactly one folder "
-                  f"({config['folder']}); found {sorted(tops)}")
-            return 1
-        zf.extractall(scratch)
+    try:
+        with zipfile.ZipFile(zip_path) as zf:
+            tops = {n.split("/")[0] for n in zf.namelist() if n.strip()}
+            if tops != {config["folder"]}:
+                print(f"FAIL: bundle must contain exactly one folder "
+                      f"({config['folder']}); found {sorted(tops)}")
+                return 1
+            zf.extractall(scratch)
+    except (OSError, EOFError, RuntimeError, zipfile.BadZipFile, zipfile.LargeZipFile) as exc:
+        # A damaged or truncated bundle download is exactly the input
+        # this proof exists for: it gets a verdict, not a traceback.
+        print(f"FAIL: {zip_path.name} could not be opened as a zip file ({exc})")
+        return 1
     root = scratch / config["folder"]
 
     # 1. Every checksum line verifies; no unlisted files.
     listed = {}
     problems = []
-    for line in (root / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
+    sums_path = root / "SHA256SUMS.txt"
+    if not sums_path.is_file():
+        print("FAIL: SHA256SUMS.txt is missing from the bundle folder, "
+              "so there is nothing to verify the files against")
+        return 1
+    for line in sums_path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         parts = line.split(None, 1)
