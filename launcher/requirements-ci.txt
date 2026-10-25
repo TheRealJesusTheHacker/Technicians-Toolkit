@@ -1,6 +1,9 @@
 # Build/test environment for the launcher (CI + local development).
 # PySide6 is the runtime dependency; PyInstaller freezes the app;
 # pytest runs the suite. Pinned so a bundle build is reproducible.
+# Install via the hash-locked sibling requirements-ci.lock.txt
+# (pip install --require-hashes -r requirements-ci.lock.txt); this file
+# stays the human-edited pin list, the lock is the verified install.
 PySide6==6.12.0
 PyInstaller==6.22.3
 pytest==9.1.1

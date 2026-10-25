@@ -27,7 +27,7 @@ Every state is designed: if the manifest is missing or damaged the window says s
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\pip install -r requirements-ci.txt
+.venv\Scripts\pip install --require-hashes -r requirements-ci.lock.txt
 .venv\Scripts\python -m pytest tests -q          # offscreen; no display needed
 .venv\Scripts\pyinstaller TechniciansToolkit.spec
 ```

@@ -31,7 +31,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install the launcher build environment
-        run: pip install -r launcher/requirements-ci.txt
+        run: pip install --require-hashes -r launcher/requirements-ci.lock.txt
 
       - name: Launcher tests (offscreen)
         env:
