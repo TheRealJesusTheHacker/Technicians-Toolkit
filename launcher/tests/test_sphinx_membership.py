@@ -61,7 +61,7 @@ ENTRYPOINTS = [t["entrypoint"] for t in EIGHT]
 EXPECTED_PINS = [
     ("Argus", "1.2.13", "v1.2.13", "ArgusPortable.zip"),
     ("NitroCore", "1.1.7", "v1.1.7", "NitroCorePortable.zip"),
-    ("VectorZip", "1.2.11", "v1.2.11", "VectorZipPortable.zip"),
+    ("VectorZip", "1.2.12", "v1.2.12", "VectorZipPortable.zip"),
     ("Charon", "1.0.6", "v1.0.6", "CharonPortable.zip"),
     ("Lazarus", "1.0.5", "v1.0.5", "LazarusPortable.zip"),
     ("Aegis", "1.0.6", "v1.0.6", "AegisPortable.zip"),
@@ -90,12 +90,12 @@ def _membership_bundle(root):
 def test_tools_json_bundles_sphinx_with_the_eight():
     config = _tools_json()
     # The eight bundled members' pins, Sphinx's among them, and the
-    # bundle they ship as: 1.3.0 (1.1.0 was the first with the whole kit).
+    # bundle they ship as: 1.3.1 (1.1.0 was the first with the whole kit).
     assert [
         (t["name"], t["version"], t["tag"], t["artifact"]) for t in config["tools"]
     ] == EXPECTED_PINS
-    assert config["bundle_version"] == "1.3.0"
-    assert config["zip_name"] == "TechniciansToolkit-v1.3.0.zip"
+    assert config["bundle_version"] == "1.3.1"
+    assert config["zip_name"] == "TechniciansToolkit-v1.3.1.zip"
     assert [e["name"] for e in config["linked"]] == ["Beerus — Live Boot"]
     # Nobody is absent any more: every member of the kit is in the
     # bundle as files, so the honest shape is an empty absent list.

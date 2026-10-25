@@ -6,7 +6,7 @@
 
 ![License: Proprietary](https://img.shields.io/badge/License-Proprietary-2ee06f?style=flat-square)
 ![Tools](https://img.shields.io/badge/Tools-8-2ee06f?style=flat-square)
-[![Bundle](https://img.shields.io/badge/Bundle-v1.3.0-2ee06f?style=flat-square)](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.3.0)
+[![Bundle](https://img.shields.io/badge/Bundle-v1.3.1-2ee06f?style=flat-square)](https://github.com/TheRealJesusTheHacker/Technicians-Toolkit/releases/tag/v1.3.1)
 ![Portable status](https://img.shields.io/badge/Portable%20status-Live%20tracker-2ee06f?style=flat-square)
 
 ---
@@ -35,7 +35,7 @@ This repository is the bundle's home — its documentation, its live portable-st
 |---|---|---|---|
 | **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.13](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.13) |
 | **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.7](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.7) |
-| **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.11](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.11) |
+| **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.12](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.12) |
 | **Charon** | Update — driver updates, restore point first | ✅ **Ships today** | [CharonPortable.zip in v1.0.6](https://github.com/TheRealJesusTheHacker/Charon.exe/releases/tag/v1.0.6) |
 | **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | ✅ **Ships today** | [LazarusPortable.zip in v1.0.5](https://github.com/TheRealJesusTheHacker/Lazarus.exe/releases/tag/v1.0.5) |
 | **Aegis** | Protect — file encryption & password vault | ✅ **Ships today** | [AegisPortable.zip in v1.0.6](https://github.com/TheRealJesusTheHacker/Aegis.exe/releases/tag/v1.0.6) |
