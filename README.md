@@ -33,13 +33,13 @@ This repository is the bundle's home — its documentation, its live portable-st
 
 | Tool | Job | Portable status | Get it |
 |---|---|---|---|
-| **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.12](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.12) |
-| **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.6](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.6) |
-| **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.10](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.10) |
-| **Charon** | Update — driver updates, restore point first | ✅ **Ships today** | [CharonPortable.zip in v1.0.5](https://github.com/TheRealJesusTheHacker/Charon.exe/releases/tag/v1.0.5) |
-| **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | ✅ **Ships today** | [LazarusPortable.zip in v1.0.4](https://github.com/TheRealJesusTheHacker/Lazarus.exe/releases/tag/v1.0.4) |
-| **Aegis** | Protect — file encryption & password vault | ✅ **Ships today** | [AegisPortable.zip in v1.0.5](https://github.com/TheRealJesusTheHacker/Aegis.exe/releases/tag/v1.0.5) |
-| **Beerus** | Destroy — secure drive destruction | ✅ **Ships today** — Beerus Portable, the app edition, is in this bundle; the Live Boot USB is 💾 by design | [BeerusPortable.zip in v0.6.3](https://github.com/TheRealJesusTheHacker/Beerus.exe/releases/tag/v0.6.3) |
+| **Argus** | Scan — antivirus & malware detection | ✅ **Ships today** | [ArgusPortable.zip in v1.2.13](https://github.com/TheRealJesusTheHacker/Argus.exe/releases/tag/v1.2.13) |
+| **NitroCore** | Tune — system optimization | ✅ **Ships today** | [NitroCorePortable.zip in v1.1.7](https://github.com/TheRealJesusTheHacker/NitroCore/releases/tag/v1.1.7) |
+| **VectorZip** | Pack — file archives & compression | ✅ **Ships today** | [VectorZipPortable.zip in v1.2.11](https://github.com/TheRealJesusTheHacker/VectorZip/releases/tag/v1.2.11) |
+| **Charon** | Update — driver updates, restore point first | ✅ **Ships today** | [CharonPortable.zip in v1.0.6](https://github.com/TheRealJesusTheHacker/Charon.exe/releases/tag/v1.0.6) |
+| **Lazarus** | Restore — file recovery, undelete, drive rescue & decrypt | ✅ **Ships today** | [LazarusPortable.zip in v1.0.5](https://github.com/TheRealJesusTheHacker/Lazarus.exe/releases/tag/v1.0.5) |
+| **Aegis** | Protect — file encryption & password vault | ✅ **Ships today** | [AegisPortable.zip in v1.0.6](https://github.com/TheRealJesusTheHacker/Aegis.exe/releases/tag/v1.0.6) |
+| **Beerus** | Destroy — secure drive destruction | ✅ **Ships today** — Beerus Portable, the app edition, is in this bundle; the Live Boot USB is 💾 by design | [BeerusPortable.zip in v0.6.4](https://github.com/TheRealJesusTheHacker/Beerus.exe/releases/tag/v0.6.4) |
 | **Sphinx** | Block — system-wide ad & tracker blocking | ✅ **In the bundle (from v1.1.0)** — the eighth tool of the kit (joined 2026-10-21). Released as v1.0.0 on 2026-10-23 and ingested the same day: its portable folder, `SphinxPortable/`, ships in the bundle like every member's files | [The Sphinx repo](https://github.com/TheRealJesusTheHacker/Sphinx) |
 
 The detailed, dated tracker — what each portable is, where it downloads, and what's queued next — lives in **[docs/PORTABLE-STATUS.md](docs/PORTABLE-STATUS.md)**. It is updated on every audit, not on a schedule of good intentions.
