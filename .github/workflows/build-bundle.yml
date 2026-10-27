@@ -3,17 +3,20 @@ name: Build bundle
 # The bundle pipeline: test the launcher, build it on Windows,
 # assemble the bundle from the tools' own releases (hash-verified),
 # prove the built zip, run the shipped launcher's own --check against
-# the shipped bundle, and — on a version tag — publish the release.
+# the shipped bundle, and — on a version dispatch — publish the release.
 #
-# A manual run (workflow_dispatch) does everything except publish,
-# and uploads the bundle as a workflow artifact instead: the proof
-# run before any tag.
+# A dispatch with the version left empty does everything except
+# publish, and uploads the bundle as a workflow artifact instead:
+# the proof run before any release.
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - "v*"
+    inputs:
+      version:
+        description: "Release version to create (e.g. v1.3.2). Leave empty for a dry run: builds only, nothing uploaded."
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -82,7 +85,7 @@ jobs:
             dist/SHA256SUMS.txt
 
       - name: Publish the bundle release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: inputs.version != ''
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -120,7 +123,12 @@ jobs:
 
           *Built by Sentinel Safeguard LLC — Security For Everyone.*
           EOF
-          gh release create "${{ github.ref_name }}" \
-            dist/TechniciansToolkit-v1.3.1.zip dist/SHA256SUMS.txt \
-            --title "Technician's Toolkit ${{ github.ref_name }}" \
-            --notes-file release-notes.md
+          if ! gh release view "${{ inputs.version }}" > /dev/null 2>&1; then
+            gh release create "${{ inputs.version }}" \
+              dist/TechniciansToolkit-v1.3.1.zip dist/SHA256SUMS.txt \
+              --title "Technician's Toolkit ${{ inputs.version }}" \
+              --notes-file release-notes.md
+          else
+            gh release upload "${{ inputs.version }}" \
+              dist/TechniciansToolkit-v1.3.1.zip dist/SHA256SUMS.txt --clobber
+          fi
